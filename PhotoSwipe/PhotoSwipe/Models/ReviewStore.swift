@@ -24,8 +24,9 @@ final class ReviewStore {
         persist()
     }
 
-    func reset() {
-        reviewed.removeAll()
+    /// Forget every decision except `ids`.
+    func reset(keeping ids: Set<String> = []) {
+        reviewed = ids
         persist()
     }
 

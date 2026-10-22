@@ -14,5 +14,11 @@ final class PendingTrashStore {
     func remove(_ id: String) { ids.remove(id); persist() }
     func clear() { ids.removeAll(); persist() }
 
+    /// Forget photos no longer in the library (e.g. deleted in the Photos app).
+    func drop(notIn existing: Set<String>) {
+        guard !ids.isSubset(of: existing) else { return }
+        ids.formIntersection(existing); persist()
+    }
+
     private func persist() { defaults.set(Array(ids), forKey: key) }
 }

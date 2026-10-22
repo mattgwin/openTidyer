@@ -39,10 +39,14 @@ final class SwipeDeckViewModel: ObservableObject {
     // Persisted trash queue (survives pause / quit)
     @Published private(set) var pendingTrashIDs: Set<String> = []
 
+    // Persisted kept list (swiped right, favorited, or filed to an album)
+    @Published private(set) var keptIDs: Set<String> = []
+
     private let service = PhotoLibraryService()
     private let store = ReviewStore()
     private let statsStore = StatsStore()
     private let trashStore = PendingTrashStore()
+    private let keptStore = KeptStore()
     private lazy var finder = DuplicateFinder(service: service)
     private var allImages: [PHAsset] = []
 
@@ -54,6 +58,10 @@ final class SwipeDeckViewModel: ObservableObject {
         allImages.filter { pendingTrashIDs.contains($0.localIdentifier) }
     }
     var pendingTrashCount: Int { pendingTrashIDs.count }
+    /// Every photo ever kept, newest first. `keptCount` is this run only.
+    var keptAssets: [PHAsset] {
+        allImages.filter { keptIDs.contains($0.localIdentifier) }
+    }
     var keptCount: Int { history.filter { $0.decision == .keep }.count }
     var skippedCount: Int { history.filter { $0.decision == .skip }.count }
     var favoritedCount: Int { history.filter { if case .favorite = $0.decision { return true }; return false }.count }
@@ -90,12 +98,34 @@ final class SwipeDeckViewModel: ObservableObject {
     private func loadLibrary() async {
         phase = .loading
         stats = statsStore.load()
-        pendingTrashIDs = trashStore.ids
         allImages = service.fetchAllPhotos()
         albums = service.userAlbums()
+        syncDecisionStores()
         if allImages.isEmpty { phase = .empty; return }
         facets = computeFacets(allImages)
         phase = .picker
+    }
+
+    /// Line the kept / to-delete lists up with the library. Photos deleted
+    /// since (here or in the Photos app) sit in Recently Deleted, which
+    /// PhotoKit can't see, so their IDs are dropped. Under limited access the
+    /// photos outside the user's selection are hidden but still exist, so
+    /// nothing is dropped then.
+    private func syncDecisionStores() {
+        let existing = Set(allImages.map(\.localIdentifier))
+        if !keptStore.didMigrate {
+            // Older builds only saved "reviewed". Reviewed, still in the
+            // library, and not queued for deletion means it was kept.
+            let trashed = trashStore.ids
+            keptStore.add(store.reviewed.filter { existing.contains($0) && !trashed.contains($0) })
+            keptStore.markMigrated()
+        }
+        if service.authorizationStatus() == .authorized {
+            keptStore.drop(notIn: existing)
+            trashStore.drop(notIn: existing)
+        }
+        keptIDs = keptStore.ids
+        pendingTrashIDs = trashStore.ids
     }
 
     private func computeFacets(_ images: [PHAsset]) -> LibraryFacets {
@@ -163,8 +193,13 @@ final class SwipeDeckViewModel: ObservableObject {
         phase = .picker
     }
 
+    /// Re-review everything and start the kept list over. Photos still queued
+    /// for deletion stay out of the deck (change them in the To delete list),
+    /// so a photo can't end up both kept and queued.
     func resetProgress() {
-        store.reset()
+        store.reset(keeping: trashStore.ids)
+        keptStore.clear()
+        keptIDs = []
         backToPicker()
     }
 
@@ -182,12 +217,15 @@ final class SwipeDeckViewModel: ObservableObject {
         switch decision {
         case .favorite:
             store.mark(asset.localIdentifier)
+            addKept(asset.localIdentifier)
             Task { try? await service.setFavorite(asset, true) }
         case .album(let id, _):
             store.mark(asset.localIdentifier)
+            addKept(asset.localIdentifier)
             Task { try? await service.add(asset, toAlbumWithLocalIdentifier: id) }
         case .keep:
             store.mark(asset.localIdentifier)
+            addKept(asset.localIdentifier)
         case .trash:
             store.mark(asset.localIdentifier)
             trashStore.add(asset.localIdentifier)
@@ -217,9 +255,11 @@ final class SwipeDeckViewModel: ObservableObject {
         switch last.decision {
         case .favorite:
             store.unmark(last.asset.localIdentifier)
+            removeKept(last.asset.localIdentifier)
             Task { try? await service.setFavorite(last.asset, false) }
         case .keep, .album:
             store.unmark(last.asset.localIdentifier)
+            removeKept(last.asset.localIdentifier)
         case .trash:
             store.unmark(last.asset.localIdentifier)
             trashStore.remove(last.asset.localIdentifier)
@@ -228,6 +268,9 @@ final class SwipeDeckViewModel: ObservableObject {
             break
         }
     }
+
+    private func addKept(_ id: String) { keptStore.add(id); keptIDs.insert(id) }
+    private func removeKept(_ id: String) { keptStore.remove(id); keptIDs.remove(id) }
 
     // MARK: Albums
 
