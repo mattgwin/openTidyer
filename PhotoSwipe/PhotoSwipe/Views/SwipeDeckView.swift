@@ -12,6 +12,7 @@ struct SwipeDeckView: View {
     @State private var original: OriginalItem?
     private var showOriginal: Bool { original != nil }
     @State private var cardWidth: CGFloat = 0
+    @State private var showGrid = false
 
     // fullScreenCover(item:) needs Identifiable; PHAsset isn't.
     private struct OriginalItem: Identifiable {
@@ -33,6 +34,9 @@ struct SwipeDeckView: View {
             }
             .fullScreenCover(item: $original) { item in
                 OriginalPhotoView(asset: item.asset)
+            }
+            .sheet(isPresented: $showGrid) {
+                if let list = vm.reviewingList { DecidedPhotosView(list: list, vm: vm) }
             }
     }
 
@@ -73,6 +77,7 @@ struct SwipeDeckView: View {
                 }
                 Spacer(minLength: 12)
                 if vm.pendingTrashCount > 0 { deleteBatchButton }
+                if vm.reviewingList != nil { gridButton }
                 undoButton
             }
             progressBar
@@ -110,6 +115,21 @@ struct SwipeDeckView: View {
         .layoutPriority(1)
         .disabled(vm.isCommitting)
         .animation(.snappy, value: vm.pendingTrashCount)
+    }
+
+    /// Kept / To delete decks only: the thumbnail grid, for scanning fast.
+    private var gridButton: some View {
+        Button {
+            Haptics.tap(); showGrid = true
+        } label: {
+            Image(systemName: "square.grid.2x2")
+                .font(.system(size: 16, weight: .bold))
+                .foregroundStyle(Theme.textStrong)
+                .frame(width: 44, height: 44)
+                .background(.ultraThinMaterial, in: Circle())
+                .overlay(Circle().strokeBorder(Theme.stroke))
+        }
+        .buttonStyle(PressableStyle())
     }
 
     private var undoButton: some View {

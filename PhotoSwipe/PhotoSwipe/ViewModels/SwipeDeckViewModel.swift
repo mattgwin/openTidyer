@@ -159,7 +159,12 @@ final class SwipeDeckViewModel: ObservableObject {
         estimatedFreeBytes = 0
         freedBytes = 0
 
-        var working = allImages.filter { !store.isReviewed($0.localIdentifier) }
+        var working: [PHAsset]
+        if case .decided(let list) = source {
+            working = list == .kept ? keptAssets : pendingTrash
+        } else {
+            working = allImages.filter { !store.isReviewed($0.localIdentifier) }
+        }
         switch source {
         case .all: break
         case .screenshots:
@@ -172,7 +177,7 @@ final class SwipeDeckViewModel: ObservableObject {
                 guard let d = $0.creationDate else { return false }
                 return cal.component(.year, from: d) == y
             }
-        case .duplicates: break
+        case .duplicates, .decided: break
         }
 
         assets = working
@@ -212,6 +217,11 @@ final class SwipeDeckViewModel: ObservableObject {
 
     func decide(_ decision: Decision) {
         guard let asset = current else { return }
+        if reviewingList != nil {
+            redecide(asset, decision)
+            advance()
+            return
+        }
         history.append(SwipeAction(asset: asset, decision: decision))
 
         switch decision {
@@ -251,6 +261,14 @@ final class SwipeDeckViewModel: ObservableObject {
         if phase == .review { phase = .swiping }
         index = max(index - 1, 0)
         Haptics.tap(.medium)
+
+        if let prior = last.priorList {
+            place(last.asset.localIdentifier, in: prior)
+            if case .favorite = last.decision {
+                Task { try? await service.setFavorite(last.asset, false) }
+            }
+            return
+        }
 
         switch last.decision {
         case .favorite:
@@ -298,16 +316,55 @@ final class SwipeDeckViewModel: ObservableObject {
     /// Flip a photo to the other list. Nothing is deleted until the queue is
     /// committed, and a favorite or album added on the way in is left as is.
     func move(_ asset: PHAsset, outOf list: DecidedList) {
-        let id = asset.localIdentifier
+        place(asset.localIdentifier, in: list == .kept ? .trash : .kept)
+    }
+
+    /// Put a photo in exactly one of the two lists.
+    private func place(_ id: String, in list: DecidedList) {
         switch list {
         case .kept:
-            removeKept(id)
-            trashStore.add(id)
-            pendingTrashIDs.insert(id)
-        case .trash:
             trashStore.remove(id)
             pendingTrashIDs.remove(id)
             addKept(id)
+        case .trash:
+            removeKept(id)
+            trashStore.add(id)
+            pendingTrashIDs.insert(id)
+        }
+    }
+
+    /// Set while swiping through the Kept or To delete list.
+    var reviewingList: DecidedList? {
+        if case .decided(let list) = source { return list }
+        return nil
+    }
+
+    /// A swipe in the Kept / To delete deck says where the photo belongs now,
+    /// whichever list it started in: left = To delete, anything that keeps
+    /// it = Kept, down = no change. These photos were already reviewed, so
+    /// the review store is left alone.
+    private func redecide(_ asset: PHAsset, _ decision: Decision) {
+        let id = asset.localIdentifier
+        let prior: DecidedList = pendingTrashIDs.contains(id) ? .trash : .kept
+        // Re-favoriting a favorite is recorded as a plain keep, so Undo can't
+        // unfavorite a photo that was a favorite before this deck.
+        var recorded = decision
+        if case .favorite = decision, asset.isFavorite { recorded = .keep }
+        history.append(SwipeAction(asset: asset, decision: recorded, priorList: prior))
+
+        switch recorded {
+        case .trash:
+            place(id, in: .trash)
+        case .keep:
+            place(id, in: .kept)
+        case .favorite:
+            place(id, in: .kept)
+            Task { try? await service.setFavorite(asset, true) }
+        case .album(let albumID, _):
+            place(id, in: .kept)
+            Task { try? await service.add(asset, toAlbumWithLocalIdentifier: albumID) }
+        case .skip:
+            break
         }
     }
 

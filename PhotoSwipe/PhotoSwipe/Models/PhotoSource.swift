@@ -9,6 +9,7 @@ enum PhotoSource: Hashable {
     case largest
     case year(Int)
     case duplicates
+    case decided(DecidedList)   // re-review the Kept or To delete list
 
     var title: String {
         switch self {
@@ -17,6 +18,7 @@ enum PhotoSource: Hashable {
         case .largest: return "Largest First"
         case .year(let y): return String(y)
         case .duplicates: return "Find Duplicates"
+        case .decided(let list): return list.title
         }
     }
 
@@ -27,6 +29,7 @@ enum PhotoSource: Hashable {
         case .largest: return "arrow.up.right.square.fill"
         case .year: return "calendar"
         case .duplicates: return "square.on.square.dashed"
+        case .decided(let list): return list.icon
         }
     }
 
@@ -37,6 +40,7 @@ enum PhotoSource: Hashable {
         case .largest: return Theme.trash
         case .year: return Theme.keep
         case .duplicates: return Color(red: 0.72, green: 0.55, blue: 1.0)
+        case .decided(let list): return list.tint
         }
     }
 

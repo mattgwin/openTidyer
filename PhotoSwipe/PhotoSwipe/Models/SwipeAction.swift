@@ -18,6 +18,9 @@ struct SwipeAction: Identifiable, Equatable {
     /// A `.skip` made by tapping the card's right edge, not a swipe. Tapping
     /// the left edge only steps back over these.
     var viaTap = false
+    /// In a Kept / To delete deck, the list the photo was in before this
+    /// decision. Undo puts it back there.
+    var priorList: DecidedList? = nil
 
     static func == (lhs: SwipeAction, rhs: SwipeAction) -> Bool {
         lhs.id == rhs.id

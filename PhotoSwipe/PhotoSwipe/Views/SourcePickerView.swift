@@ -77,11 +77,12 @@ struct SourcePickerView: View {
         .buttonStyle(PressableStyle(scale: 0.96))
     }
 
-    /// Kept / To delete: opens the photo grid instead of starting a deck.
+    /// Kept / To delete: swipe through the list again. An empty list opens
+    /// the grid instead, whose empty state explains how photos get there.
     private func listTile(_ list: DecidedList, count: Int) -> some View {
         Button {
             Haptics.tap()
-            openList = list
+            if count == 0 { openList = list } else { vm.select(.decided(list)) }
         } label: {
             tileLabel(icon: list.icon, tint: list.tint, title: list.title,
                       subtitle: "\(count) photo\(count == 1 ? "" : "s")")
