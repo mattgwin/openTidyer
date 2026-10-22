@@ -4,69 +4,6 @@ func byteString(_ bytes: Int64) -> String {
     ByteCountFormatter.string(fromByteCount: max(0, bytes), countStyle: .file)
 }
 
-/// Compact lifetime-stats hero shown atop the picker. Tap → detailed sheet.
-struct StatsHeroCard: View {
-    let stats: LifetimeStats
-    var onTap: () -> Void
-    @State private var appear = false
-
-    var body: some View {
-        Button {
-            Haptics.tap(); onTap()
-        } label: {
-            VStack(alignment: .leading, spacing: 10) {
-                Text("Storage reclaimed")
-                    .font(.tidyFixed(12, .semibold))
-                    .foregroundStyle(Theme.textDim)
-
-                Text(byteString(stats.freedBytes))
-                    .font(.tidyFixed(48, .semibold))
-                    .tracking(-0.96)
-                    .foregroundStyle(Theme.gradient(Theme.keep, Theme.album))
-                    .contentTransition(.numericText())
-                    .scaleEffect(appear ? 1 : 0.85, anchor: .leading)
-                    .opacity(appear ? 1 : 0)
-
-                HStack(spacing: 8) {
-                    miniPill("trash.fill", Theme.trash, "\(stats.deletedCount) deleted")
-                    miniPill("square.on.square.dashed", Theme.album, "\(stats.duplicatesRemoved) dupes")
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(20)
-            .background(
-                ZStack {
-                    RoundedRectangle(cornerRadius: 26, style: .continuous).fill(.ultraThinMaterial)
-                    RoundedRectangle(cornerRadius: 26, style: .continuous)
-                        .fill(Theme.gradient(Theme.keep.opacity(0.12), Theme.album.opacity(0.10)))
-                }
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 26, style: .continuous)
-                    .strokeBorder(Theme.gradient(Theme.keep.opacity(0.4), Theme.album.opacity(0.3)), lineWidth: 1)
-            )
-            .overlay(alignment: .topTrailing) {
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundStyle(Theme.textDim)
-                    .padding(18)
-            }
-        }
-        .buttonStyle(PressableStyle(scale: 0.98))
-        .onAppear { withAnimation(.phase.delay(0.1)) { appear = true } }
-    }
-
-    private func miniPill(_ icon: String, _ color: Color, _ text: String) -> some View {
-        HStack(spacing: 5) {
-            Image(systemName: icon).font(.system(size: 11, weight: .bold))
-            Text(text).font(.tidyFixed(14, .semibold))
-        }
-        .foregroundStyle(color)
-        .padding(.horizontal, 10).padding(.vertical, 6)
-        .background(color.opacity(0.14), in: Capsule())
-    }
-}
-
 /// Full analytics sheet.
 struct StatsView: View {
     @ObservedObject var vm: SwipeDeckViewModel

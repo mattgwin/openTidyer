@@ -57,7 +57,7 @@ photos still land in **Recently Deleted (30 days)**, so mistakes are recoverable
 - **Delete the batch you swiped so far** without finishing the whole library — a "Delete N" button appears mid-run
 - A leftover trash queue is offered on the home screen if you quit mid-session
 - **Kept** and **To Delete** tiles on the home screen reopen those photos in the swipe deck: swipe left to queue a kept photo for deletion, right to rescue one from the queue. The grid button in the header shows them as thumbnails. Nothing is deleted until you tap Delete
-- **Sources** to break the job into chunks: All Photos · Screenshots · Largest First · by Year
+- **Sources** to break the job into chunks: All Photos · Screenshots · by Year
 
 ### Duplicate detection (on-device)
 - Finds near-identical photos and burst shots using a **perceptual difference hash (dHash)** + **average-color** matching + PhotoKit burst grouping
@@ -216,7 +216,7 @@ PhotoSwipe/
 │  └─ SwipeDeckViewModel.swift  # @MainActor state machine: loading→picker→{swiping|duplicates}→review
 ├─ Views/
 │  ├─ RootView.swift            # Phase router + aurora background
-│  ├─ SourcePickerView.swift    # Home screen tiles + stats hero + pending-trash banner
+│  ├─ SourcePickerView.swift    # Home screen tiles (incl. storage reclaimed) + pending-trash banner
 │  ├─ SwipeDeckView.swift       # Card deck, gestures, action bar, mid-run delete
 │  ├─ PhotoCardView.swift       # Card: fitted photo over blurred fill, intent stamps
 │  ├─ DuplicatesView.swift      # Duplicate groups review

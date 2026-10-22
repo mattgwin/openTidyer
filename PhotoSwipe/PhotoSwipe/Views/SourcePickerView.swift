@@ -16,17 +16,14 @@ struct SourcePickerView: View {
 
                 if vm.pendingTrashCount > 0 { pendingTrashBanner }
 
-                if vm.stats.deletedCount > 0 || vm.stats.freedBytes > 0 {
-                    StatsHeroCard(stats: vm.stats) { showStats = true }
-                }
-
+                // Largest First is still a PhotoSource, just not offered here.
                 LazyVGrid(columns: cols, spacing: 14) {
                     tile(.all, subtitle: "\(vm.facets.total) photos")
                     tile(.duplicates, subtitle: "Scan & merge")
                     listTile(.kept, count: vm.keptAssets.count)
                     listTile(.trash, count: vm.pendingTrash.count)
                     tile(.screenshots, subtitle: "\(vm.facets.screenshots) shots")
-                    tile(.largest, subtitle: "Free space fast")
+                    statsTile
                 }
 
                 if !vm.facets.years.isEmpty {
@@ -90,6 +87,21 @@ struct SourcePickerView: View {
         .buttonStyle(PressableStyle(scale: 0.96))
     }
 
+    /// Lifetime freed space; opens the stats sheet. Always shown, even at
+    /// zero, so the grid stays three even rows.
+    private var statsTile: some View {
+        let freed = vm.stats.freedBytes
+        return Button {
+            Haptics.tap()
+            showStats = true
+        } label: {
+            // ByteCountFormatter says "Zero KB" for 0, which reads oddly here.
+            tileLabel(icon: "internaldrive.fill", tint: Theme.keep, title: "Storage Reclaimed",
+                      subtitle: freed > 0 ? "\(byteString(freed)) freed" : "0 MB freed")
+        }
+        .buttonStyle(PressableStyle(scale: 0.96))
+    }
+
     private func tileLabel(icon: String, tint: Color, title: String, subtitle: String) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             Image(systemName: icon)
@@ -101,6 +113,9 @@ struct SourcePickerView: View {
             Text(title)
                 .font(.tidy(16, .semibold, relativeTo: .headline))
                 .foregroundStyle(Theme.textStrong)
+                // A wrapped title would make its row taller than its neighbour.
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
             Text(subtitle)
                 .font(.tidy(14, relativeTo: .subheadline))
                 .foregroundStyle(Theme.textDim)
