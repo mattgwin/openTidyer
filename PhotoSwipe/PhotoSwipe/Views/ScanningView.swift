@@ -16,7 +16,7 @@ struct ScanningView: View {
                     .rotationEffect(.degrees(-90))
                     .animation(.snappy(duration: 0.25), value: vm.scanProgress)
                 Text("\(Int(vm.scanProgress * 100))%")
-                    .font(.system(size: 26, weight: .bold, design: .rounded))
+                    .font(.tidyFixed(24, .semibold))
                     .monospacedDigit()
                     .foregroundStyle(Theme.textStrong)
                     .contentTransition(.numericText())
@@ -25,10 +25,10 @@ struct ScanningView: View {
 
             VStack(spacing: 4) {
                 Text("Scanning for duplicates")
-                    .font(.system(.title3, design: .rounded).weight(.bold))
+                    .font(.tidy(20, .semibold, relativeTo: .title3))
                     .foregroundStyle(Theme.textStrong)
                 Text("Comparing photos on-device")
-                    .font(.system(.subheadline, design: .rounded))
+                    .font(.tidy(14, relativeTo: .subheadline))
                     .foregroundStyle(Theme.textDim)
             }
         }

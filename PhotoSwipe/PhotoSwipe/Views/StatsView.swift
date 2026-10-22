@@ -15,13 +15,13 @@ struct StatsHeroCard: View {
             Haptics.tap(); onTap()
         } label: {
             VStack(alignment: .leading, spacing: 10) {
-                Text("STORAGE RECLAIMED")
-                    .font(.system(size: 11, weight: .semibold, design: .rounded))
-                    .tracking(1.6)
+                Text("Storage reclaimed")
+                    .font(.tidyFixed(12, .semibold))
                     .foregroundStyle(Theme.textDim)
 
                 Text(byteString(stats.freedBytes))
-                    .font(.system(size: 42, weight: .heavy, design: .rounded))
+                    .font(.tidyFixed(48, .semibold))
+                    .tracking(-0.96)
                     .foregroundStyle(Theme.gradient(Theme.keep, Theme.album))
                     .contentTransition(.numericText())
                     .scaleEffect(appear ? 1 : 0.85, anchor: .leading)
@@ -59,7 +59,7 @@ struct StatsHeroCard: View {
     private func miniPill(_ icon: String, _ color: Color, _ text: String) -> some View {
         HStack(spacing: 5) {
             Image(systemName: icon).font(.system(size: 11, weight: .bold))
-            Text(text).font(.system(size: 13, weight: .semibold, design: .rounded))
+            Text(text).font(.tidyFixed(14, .semibold))
         }
         .foregroundStyle(color)
         .padding(.horizontal, 10).padding(.vertical, 6)
@@ -101,10 +101,11 @@ struct StatsView: View {
                 .font(.system(size: 34))
                 .foregroundStyle(Theme.gradient(Theme.keep, Theme.album))
             Text(byteString(vm.stats.freedBytes))
-                .font(.system(size: 48, weight: .heavy, design: .rounded))
+                .font(.tidyFixed(48, .semibold))
+                .tracking(-0.96)
                 .foregroundStyle(Theme.textStrong)
             Text("freed across \(vm.stats.sessions) cleanup\(vm.stats.sessions == 1 ? "" : "s")")
-                .font(.system(.subheadline, design: .rounded))
+                .font(.tidy(14, relativeTo: .subheadline))
                 .foregroundStyle(Theme.textDim)
         }
         .frame(maxWidth: .infinity)
@@ -137,7 +138,7 @@ struct StatsView: View {
                 .frame(width: 34, height: 34)
                 .background(Circle().fill(color.opacity(0.14)))
             Text(label)
-                .font(.system(.body, design: .rounded).weight(.medium))
+                .font(.tidy(16, relativeTo: .body))
                 .foregroundStyle(Theme.text)
             Spacer()
             AnimatedCount(value: value, color: color)
@@ -155,7 +156,7 @@ struct StatsView: View {
                 Text(confirmReset ? "Tap again to confirm reset" : "Reset analytics")
                 Spacer()
             }
-            .font(.system(.subheadline, design: .rounded).weight(.medium))
+            .font(.tidy(14, relativeTo: .subheadline))
             .foregroundStyle(confirmReset ? Theme.trash : Theme.textDim)
             .padding(.horizontal, 18).padding(.vertical, 15)
         }

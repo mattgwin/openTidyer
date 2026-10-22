@@ -30,9 +30,8 @@ struct SourcePickerView: View {
                 }
 
                 if !vm.facets.years.isEmpty {
-                    Text("BY YEAR")
-                        .font(.system(size: 11, weight: .semibold, design: .rounded))
-                        .tracking(1.6)
+                    Text("By year")
+                        .font(.tidyFixed(12, .semibold))
                         .foregroundStyle(Theme.textDim)
                     yearChips
                 }
@@ -57,11 +56,12 @@ struct SourcePickerView: View {
     private var title: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text("TIDYER")
-                .font(.system(size: 11, weight: .semibold, design: .rounded))
-                .tracking(2.4)
+                .font(.tidyFixed(12, .semibold))
+                .tracking(0.6)
                 .foregroundStyle(Theme.textDim)
             Text("Tidy up")
-                .font(.system(size: 34, weight: .heavy, design: .rounded))
+                .font(.tidyFixed(36, .semibold))
+                .tracking(-0.72)
                 .foregroundStyle(Theme.textStrong)
         }
         .padding(.top, 4)
@@ -98,10 +98,10 @@ struct SourcePickerView: View {
                 .background(Circle().fill(tint.opacity(0.14)))
             Spacer(minLength: 18)
             Text(title)
-                .font(.system(.headline, design: .rounded).weight(.bold))
+                .font(.tidy(16, .semibold, relativeTo: .headline))
                 .foregroundStyle(Theme.textStrong)
             Text(subtitle)
-                .font(.system(.subheadline, design: .rounded))
+                .font(.tidy(14, relativeTo: .subheadline))
                 .foregroundStyle(Theme.textDim)
         }
         .frame(maxWidth: .infinity, minHeight: 150, alignment: .leading)
@@ -122,10 +122,10 @@ struct SourcePickerView: View {
                 } label: {
                     VStack(spacing: 1) {
                         Text(String(y.year))
-                            .font(.system(.headline, design: .rounded).weight(.bold))
+                            .font(.tidy(16, .semibold, relativeTo: .headline))
                             .foregroundStyle(Theme.textStrong)
                         Text("\(y.count)")
-                            .font(.system(size: 12, weight: .medium, design: .rounded))
+                            .font(.tidyFixed(12))
                             .monospacedDigit()
                             .foregroundStyle(Theme.textDim)
                     }
@@ -152,10 +152,10 @@ struct SourcePickerView: View {
                     .background(Theme.gradient(Theme.trash, Theme.trash2), in: Circle())
                 VStack(alignment: .leading, spacing: 1) {
                     Text("\(vm.pendingTrashCount) photos ready to delete")
-                        .font(.system(.subheadline, design: .rounded).weight(.bold))
+                        .font(.tidy(14, .semibold, relativeTo: .subheadline))
                         .foregroundStyle(Theme.textStrong)
                     Text("From your last session — tap to delete")
-                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                        .font(.tidyFixed(12))
                         .foregroundStyle(Theme.textDim)
                 }
                 Spacer()
@@ -179,7 +179,7 @@ struct SourcePickerView: View {
         } label: {
             Label(confirmReset ? "Tap again to reset (clears Kept)" : "Reset review progress",
                   systemImage: "arrow.counterclockwise")
-                .font(.system(.subheadline, design: .rounded).weight(.medium))
+                .font(.tidy(14, relativeTo: .subheadline))
                 .foregroundStyle(confirmReset ? Theme.trash : Theme.textDim)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)

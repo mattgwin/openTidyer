@@ -41,18 +41,19 @@ struct SwipeDeckView: View {
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(vm.source.title.uppercased())
-                        .font(.system(size: 11, weight: .semibold, design: .rounded))
-                        .tracking(1.6)
+                        .font(.tidyFixed(12, .semibold))
+                        .tracking(0.6)
                         .foregroundStyle(Theme.textDim)
                     HStack(alignment: .firstTextBaseline, spacing: 5) {
                         Text("\(vm.remaining)")
-                            .font(.system(size: 30, weight: .bold, design: .rounded))
+                            .font(.tidyFixed(30, .semibold))
+                            .tracking(-0.6)
                             .monospacedDigit()
                             .foregroundStyle(Theme.textStrong)
                             .contentTransition(.numericText(value: Double(vm.remaining)))
                             .animation(.snappy(duration: 0.35), value: vm.remaining)
                         Text("/ \(vm.assets.count)")
-                            .font(.system(size: 16, weight: .medium, design: .rounded))
+                            .font(.tidyFixed(16))
                             .monospacedDigit()
                             .foregroundStyle(Theme.textDim)
                     }
@@ -83,7 +84,7 @@ struct SwipeDeckView: View {
                     Image(systemName: "trash.fill").font(.system(size: 13, weight: .bold))
                 }
                 Text("\(vm.pendingTrashCount)")
-                    .font(.system(size: 15, weight: .bold, design: .rounded))
+                    .font(.tidyFixed(16, .semibold))
                     .monospacedDigit()
                     .contentTransition(.numericText(value: Double(vm.pendingTrashCount)))
             }

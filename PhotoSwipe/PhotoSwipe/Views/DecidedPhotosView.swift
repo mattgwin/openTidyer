@@ -89,7 +89,7 @@ struct DecidedPhotosView: View {
                 if vm.isCommitting { ProgressView().tint(Theme.onTrash) }
                 else { Image(systemName: "trash.fill") }
                 Text("Delete \(count) photos")
-                    .font(.system(.headline, design: .rounded).weight(.bold))
+                    .font(.tidy(16, .semibold, relativeTo: .headline))
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 17)
@@ -108,12 +108,12 @@ struct DecidedPhotosView: View {
                 .font(.system(size: 44))
                 .foregroundStyle(list.tint.opacity(0.6))
             Text(list == .kept ? "Nothing kept yet" : "Nothing to delete")
-                .font(.system(size: 22, weight: .bold, design: .rounded))
+                .font(.tidyFixed(24, .semibold))
                 .foregroundStyle(Theme.textStrong)
             Text(list == .kept
                  ? "Photos you swipe right show up here."
                  : "Photos you swipe left wait here until you delete them.")
-                .font(.system(.subheadline, design: .rounded))
+                .font(.tidy(14, relativeTo: .subheadline))
                 .multilineTextAlignment(.center)
                 .foregroundStyle(Theme.textDim)
                 .padding(.horizontal, 40)
@@ -163,7 +163,7 @@ private struct DecidedPhotoDetail: View {
             dismiss()
         } label: {
             Label(list.moveLabel, systemImage: target.icon)
-                .font(.system(.headline, design: .rounded).weight(.bold))
+                .font(.tidy(16, .semibold, relativeTo: .headline))
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 17)
                 .background(Theme.gradient(target.tint, target.tint2),

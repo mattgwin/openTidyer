@@ -132,7 +132,7 @@ struct AuroraBackground: View {
 
 struct AnimatedCount: View {
     let value: Int
-    var font: Font = .title3.weight(.bold)
+    var font: Font = .tidy(20, .semibold, relativeTo: .title3)
     var color: Color = Theme.textStrong
 
     var body: some View {

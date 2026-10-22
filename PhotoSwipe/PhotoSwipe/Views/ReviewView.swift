@@ -35,10 +35,11 @@ struct ReviewView: View {
 
                 VStack(spacing: 4) {
                     Text("ALL CAUGHT UP")
-                        .font(.system(size: 12, weight: .semibold, design: .rounded))
-                        .tracking(2).foregroundStyle(Theme.textDim)
+                        .font(.tidyFixed(12, .semibold))
+                        .tracking(0.6).foregroundStyle(Theme.textDim)
                     Text("Library swept")
-                        .font(.system(size: 30, weight: .heavy, design: .rounded))
+                        .font(.tidyFixed(30, .semibold))
+                        .tracking(-0.6)
                         .foregroundStyle(Theme.textStrong)
                 }
                 .opacity(appear ? 1 : 0).offset(y: appear ? 0 : 12)
@@ -66,7 +67,7 @@ struct ReviewView: View {
         HStack(spacing: 8) {
             Image(systemName: "internaldrive.fill")
             Text("~\(byteString(vm.estimatedFreeBytes)) to free")
-                .font(.system(.subheadline, design: .rounded).weight(.bold))
+                .font(.tidy(14, .semibold, relativeTo: .subheadline))
         }
         .foregroundStyle(Theme.trash)
         .padding(.horizontal, 16).padding(.vertical, 9)
@@ -106,7 +107,7 @@ struct ReviewView: View {
                 .frame(width: 34, height: 34)
                 .background(Circle().fill(color.opacity(0.14)))
             Text(label)
-                .font(.system(.body, design: .rounded).weight(.medium))
+                .font(.tidy(16, relativeTo: .body))
                 .foregroundStyle(Theme.text)
             Spacer()
             AnimatedCount(value: count, color: color)
@@ -123,7 +124,7 @@ struct ReviewView: View {
                     if vm.isCommitting { ProgressView().tint(vm.pendingTrash.isEmpty ? Theme.onKeep : Theme.onTrash) }
                     else if !vm.pendingTrash.isEmpty { Image(systemName: "trash.fill") }
                     Text(vm.pendingTrash.isEmpty ? "Done" : "Delete \(vm.pendingTrash.count) photos")
-                        .font(.system(.headline, design: .rounded).weight(.bold))
+                        .font(.tidy(16, .semibold, relativeTo: .headline))
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 17)
@@ -144,7 +145,7 @@ struct ReviewView: View {
                     .opacity(vm.canUndo ? 1 : 0.35)
                 Button("Back to filters") { Haptics.tap(); vm.backToPicker() }
             }
-            .font(.system(.subheadline, design: .rounded).weight(.medium))
+            .font(.tidy(14, relativeTo: .subheadline))
             .tint(Theme.textDim)
         }
         .padding(.horizontal, 6).padding(.bottom, 18)
@@ -158,15 +159,15 @@ struct ReviewView: View {
                 .font(.system(size: 54))
                 .foregroundStyle(Theme.gradient(Theme.keep, Theme.album))
             Text("Nothing left here")
-                .font(.system(size: 24, weight: .bold, design: .rounded))
+                .font(.tidyFixed(24, .semibold))
                 .foregroundStyle(Theme.textStrong)
             Text("You've reviewed everything in this filter.")
-                .font(.system(.subheadline, design: .rounded))
+                .font(.tidy(14, relativeTo: .subheadline))
                 .multilineTextAlignment(.center)
                 .foregroundStyle(Theme.textDim)
                 .padding(.horizontal, 40)
             Button("Back to filters") { Haptics.tap(); vm.backToPicker() }
-                .font(.system(.headline, design: .rounded).weight(.semibold))
+                .font(.tidy(16, .semibold, relativeTo: .headline))
                 .foregroundStyle(Theme.onAlbum)
                 .padding(.horizontal, 22).padding(.vertical, 13)
                 .background(Theme.gradient(Theme.album, Theme.album2), in: Capsule())

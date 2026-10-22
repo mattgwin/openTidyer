@@ -72,7 +72,7 @@ struct PhotoCardView: View {
                 .overlay(alignment: .bottomLeading) {
                     if let date = asset.creationDate {
                         Text(date.formatted(date: .abbreviated, time: .omitted))
-                            .font(.system(.subheadline, design: .rounded).weight(.semibold))
+                            .font(.tidy(14, .semibold, relativeTo: .subheadline))
                             .foregroundStyle(Theme.textStrong)
                             .padding(20)
                     }
@@ -111,7 +111,8 @@ struct PhotoCardView: View {
                        alignment: Alignment, opacity: Double) -> some View {
         let o = min(opacity, 1)
         return Text(text)
-            .font(.system(size: 32, weight: .heavy, design: .rounded))
+            .font(.tidyFixed(30, .semibold))
+            .tracking(1.5)
             .foregroundStyle(color)
             .padding(.horizontal, 16).padding(.vertical, 9)
             .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))

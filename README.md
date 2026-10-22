@@ -224,9 +224,11 @@ PhotoSwipe/
 │  ├─ AlbumPickerView.swift     # Album chooser / creator
 │  ├─ DecidedPhotosView.swift   # Kept / To delete photo grids, change-of-mind
 │  └─ Thumbnail.swift           # Async grid thumbnail
-└─ Support/
-   ├─ Theme.swift               # Colors, gradients, motion tokens, haptics, aurora
-   └─ Confetti.swift            # Celebration burst
+├─ Support/
+│  ├─ Theme.swift               # Colors, gradients, motion tokens, haptics, aurora
+│  ├─ Fonts.swift               # Registers Schibsted Grotesk; Font.tidy helpers
+│  └─ Confetti.swift            # Celebration burst
+└─ Resources/Fonts/             # Schibsted Grotesk 400/600 + OFL licence
 ```
 
 **How duplicate detection works:** each candidate's 160px thumbnail is reduced to
@@ -276,6 +278,11 @@ computer) before mass-cleaning. The author is not responsible for lost data.
 ## License
 
 [MIT](LICENSE) © 2026 Alperen Adatepe
+
+The fonts in `PhotoSwipe/PhotoSwipe/Resources/Fonts/` are not MIT: Schibsted
+Grotesk is © The Schibsted-Grotesk Project Authors, licensed under the SIL Open
+Font License 1.1. See
+[OFL-SchibstedGrotesk.txt](PhotoSwipe/PhotoSwipe/Resources/Fonts/OFL-SchibstedGrotesk.txt).
 
 ## Acknowledgements
 

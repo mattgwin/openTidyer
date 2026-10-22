@@ -29,10 +29,10 @@ struct DuplicatesView: View {
             Spacer()
             VStack(spacing: 1) {
                 Text("DUPLICATES")
-                    .font(.system(size: 11, weight: .semibold, design: .rounded))
-                    .tracking(1.6).foregroundStyle(Theme.textDim)
+                    .font(.tidyFixed(12, .semibold))
+                    .tracking(0.6).foregroundStyle(Theme.textDim)
                 Text("\(vm.duplicateGroups.count) group\(vm.duplicateGroups.count == 1 ? "" : "s")")
-                    .font(.system(.headline, design: .rounded).weight(.bold))
+                    .font(.tidy(16, .semibold, relativeTo: .headline))
                     .foregroundStyle(Theme.textStrong)
             }
             Spacer()
@@ -73,11 +73,11 @@ struct DuplicatesView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("\(group.assets.count) similar")
-                    .font(.system(.subheadline, design: .rounded).weight(.semibold))
+                    .font(.tidy(14, .semibold, relativeTo: .subheadline))
                     .foregroundStyle(Theme.textStrong)
                 Spacer()
                 Text("\(group.trashIDs.count) to delete")
-                    .font(.system(size: 13, weight: .medium, design: .rounded))
+                    .font(.tidyFixed(14))
                     .foregroundStyle(group.trashIDs.isEmpty ? Theme.textDim : Theme.trash)
             }
             ScrollView(.horizontal, showsIndicators: false) {
@@ -113,7 +113,7 @@ struct DuplicatesView: View {
                 .overlay(alignment: .bottomLeading) {
                     if isKeeper {
                         Text("BEST")
-                            .font(.system(size: 9, weight: .heavy, design: .rounded))
+                            .font(.tidyFixed(12, .semibold))
                             .foregroundStyle(Theme.onFavorite)
                             .padding(.horizontal, 6).padding(.vertical, 3)
                             .background(Theme.favorite, in: Capsule())
@@ -135,7 +135,7 @@ struct DuplicatesView: View {
                 else { Image(systemName: "trash.fill") }
                 Text(vm.duplicateTrashCount == 0 ? "Nothing selected"
                      : "Delete \(vm.duplicateTrashCount) duplicates")
-                    .font(.system(.headline, design: .rounded).weight(.bold))
+                    .font(.tidy(16, .semibold, relativeTo: .headline))
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 17)
@@ -160,13 +160,13 @@ struct DuplicatesView: View {
                 .font(.system(size: 56))
                 .foregroundStyle(Theme.gradient(Theme.keep, Theme.keep2))
             Text("No duplicates found")
-                .font(.system(size: 24, weight: .bold, design: .rounded))
+                .font(.tidyFixed(24, .semibold))
                 .foregroundStyle(Theme.textStrong)
             Text("Your library looks clean.")
-                .font(.system(.subheadline, design: .rounded))
+                .font(.tidy(14, relativeTo: .subheadline))
                 .foregroundStyle(Theme.textDim)
             Button("Back to filters") { Haptics.tap(); vm.backToPicker() }
-                .font(.system(.headline, design: .rounded).weight(.semibold))
+                .font(.tidy(16, .semibold, relativeTo: .headline))
                 .foregroundStyle(Theme.onAlbum)
                 .padding(.horizontal, 22).padding(.vertical, 13)
                 .background(Theme.gradient(Theme.album, Theme.album2), in: Capsule())
