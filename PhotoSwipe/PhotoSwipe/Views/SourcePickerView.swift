@@ -126,7 +126,6 @@ struct SourcePickerView: View {
                             .foregroundStyle(Theme.textStrong)
                         Text("\(y.count)")
                             .font(.tidyFixed(12))
-                            .monospacedDigit()
                             .foregroundStyle(Theme.textDim)
                     }
                     .frame(maxWidth: .infinity)

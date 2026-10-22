@@ -17,7 +17,6 @@ struct ScanningView: View {
                     .animation(.snappy(duration: 0.25), value: vm.scanProgress)
                 Text("\(Int(vm.scanProgress * 100))%")
                     .font(.tidyFixed(24, .semibold))
-                    .monospacedDigit()
                     .foregroundStyle(Theme.textStrong)
                     .contentTransition(.numericText())
             }

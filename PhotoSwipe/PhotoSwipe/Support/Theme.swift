@@ -137,7 +137,7 @@ struct AnimatedCount: View {
 
     var body: some View {
         Text("\(value)")
-            .font(font.monospacedDigit())
+            .font(font)
             .foregroundStyle(color)
             .contentTransition(.numericText(value: Double(value)))
             .animation(.snappy(duration: 0.4), value: value)

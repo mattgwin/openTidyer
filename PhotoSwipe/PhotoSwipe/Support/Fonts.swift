@@ -4,6 +4,8 @@ import CoreText
 // MARK: - Schibsted Grotesk (mgDesign UI face, OFL-1.1)
 // Two static weights only, 400 and 600. Each file is a single weight, so pick
 // it by PostScript name; `.weight()` on these would just synthesize.
+// Don't use `.monospacedDigit()` with it: the font's tabular set also swaps
+// in a digit-wide comma, period and percent, so "7,650" spreads apart.
 
 enum TidyWeight { case regular, semibold }
 

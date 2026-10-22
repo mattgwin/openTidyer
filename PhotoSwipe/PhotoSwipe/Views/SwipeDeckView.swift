@@ -48,16 +48,16 @@ struct SwipeDeckView: View {
                         Text("\(vm.remaining)")
                             .font(.tidyFixed(30, .semibold))
                             .tracking(-0.6)
-                            .monospacedDigit()
                             .foregroundStyle(Theme.textStrong)
                             .contentTransition(.numericText(value: Double(vm.remaining)))
                             .animation(.snappy(duration: 0.35), value: vm.remaining)
                         Text("/ \(vm.assets.count)")
                             .font(.tidyFixed(16))
-                            .monospacedDigit()
                             .foregroundStyle(Theme.textDim)
                     }
-                    .fixedSize()
+                    // The counter gives way on narrow phones, never the pill.
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
                 }
                 Spacer(minLength: 12)
                 if vm.pendingTrashCount > 0 { deleteBatchButton }
@@ -85,15 +85,17 @@ struct SwipeDeckView: View {
                 }
                 Text("\(vm.pendingTrashCount)")
                     .font(.tidyFixed(16, .semibold))
-                    .monospacedDigit()
+                    .lineLimit(1)
                     .contentTransition(.numericText(value: Double(vm.pendingTrashCount)))
             }
             .foregroundStyle(Theme.onTrash)
-            .padding(.horizontal, 13).frame(height: 44)
+            .padding(.horizontal, 13).frame(minWidth: 44, minHeight: 44)
+            .fixedSize()   // grows to fit 1 to 4+ digits on one line
             .background(Theme.gradient(Theme.trash, Theme.trash2), in: Capsule())
             .shadow(color: Theme.trash.opacity(0.35), radius: 8, y: 3)
         }
         .buttonStyle(PressableStyle())
+        .layoutPriority(1)
         .disabled(vm.isCommitting)
         .animation(.snappy, value: vm.pendingTrashCount)
     }
