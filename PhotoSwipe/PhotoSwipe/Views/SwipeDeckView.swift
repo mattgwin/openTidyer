@@ -117,7 +117,7 @@ struct SwipeDeckView: View {
         .animation(.snappy, value: vm.pendingTrashCount)
     }
 
-    /// Kept / To delete decks only: the thumbnail grid, for scanning fast.
+    /// Kept / To Delete decks only: the thumbnail grid, for scanning fast.
     private var gridButton: some View {
         Button {
             Haptics.tap(); showGrid = true

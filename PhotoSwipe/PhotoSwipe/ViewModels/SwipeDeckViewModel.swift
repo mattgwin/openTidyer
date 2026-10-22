@@ -199,7 +199,7 @@ final class SwipeDeckViewModel: ObservableObject {
     }
 
     /// Re-review everything and start the kept list over. Photos still queued
-    /// for deletion stay out of the deck (change them in the To delete list),
+    /// for deletion stay out of the deck (change them in the To Delete list),
     /// so a photo can't end up both kept and queued.
     func resetProgress() {
         store.reset(keeping: trashStore.ids)
@@ -311,7 +311,7 @@ final class SwipeDeckViewModel: ObservableObject {
     private func addKept(_ id: String) { keptStore.add(id); keptIDs.insert(id) }
     private func removeKept(_ id: String) { keptStore.remove(id); keptIDs.remove(id) }
 
-    // MARK: Change of mind (Kept / To delete lists)
+    // MARK: Change of mind (Kept / To Delete lists)
 
     /// Flip a photo to the other list. Nothing is deleted until the queue is
     /// committed, and a favorite or album added on the way in is left as is.
@@ -333,14 +333,14 @@ final class SwipeDeckViewModel: ObservableObject {
         }
     }
 
-    /// Set while swiping through the Kept or To delete list.
+    /// Set while swiping through the Kept or To Delete list.
     var reviewingList: DecidedList? {
         if case .decided(let list) = source { return list }
         return nil
     }
 
-    /// A swipe in the Kept / To delete deck says where the photo belongs now,
-    /// whichever list it started in: left = To delete, anything that keeps
+    /// A swipe in the Kept / To Delete deck says where the photo belongs now,
+    /// whichever list it started in: left = To Delete, anything that keeps
     /// it = Kept, down = no change. These photos were already reviewed, so
     /// the review store is left alone.
     private func redecide(_ asset: PHAsset, _ decision: Decision) {

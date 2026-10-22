@@ -56,7 +56,7 @@ photos still land in **Recently Deleted (30 days)**, so mistakes are recoverable
 - **Pause & resume** — every decision is remembered, so you continue exactly where you stopped
 - **Delete the batch you swiped so far** without finishing the whole library — a "Delete N" button appears mid-run
 - A leftover trash queue is offered on the home screen if you quit mid-session
-- **Kept** and **To delete** tiles on the home screen reopen those photos in the swipe deck: swipe left to queue a kept photo for deletion, right to rescue one from the queue. The grid button in the header shows them as thumbnails. Nothing is deleted until you tap Delete
+- **Kept** and **To Delete** tiles on the home screen reopen those photos in the swipe deck: swipe left to queue a kept photo for deletion, right to rescue one from the queue. The grid button in the header shows them as thumbnails. Nothing is deleted until you tap Delete
 - **Sources** to break the job into chunks: All Photos · Screenshots · Largest First · by Year
 
 ### Duplicate detection (on-device)
@@ -224,7 +224,7 @@ PhotoSwipe/
 │  ├─ ReviewView.swift          # End-of-run summary + confetti + commit
 │  ├─ StatsView.swift           # Lifetime analytics dashboard
 │  ├─ AlbumPickerView.swift     # Album chooser / creator
-│  ├─ DecidedPhotosView.swift   # Kept / To delete photo grids, change-of-mind
+│  ├─ DecidedPhotosView.swift   # Kept / To Delete photo grids, change-of-mind
 │  ├─ OriginalPhotoView.swift   # Long-press full-screen viewer: zoom, Live Photos
 │  └─ Thumbnail.swift           # Async grid thumbnail
 ├─ Support/

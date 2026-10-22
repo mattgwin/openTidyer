@@ -77,7 +77,7 @@ struct SourcePickerView: View {
         .buttonStyle(PressableStyle(scale: 0.96))
     }
 
-    /// Kept / To delete: swipe through the list again. An empty list opens
+    /// Kept / To Delete: swipe through the list again. An empty list opens
     /// the grid instead, whose empty state explains how photos get there.
     private func listTile(_ list: DecidedList, count: Int) -> some View {
         Button {

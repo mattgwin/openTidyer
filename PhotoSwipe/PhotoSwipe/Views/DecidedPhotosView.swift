@@ -2,14 +2,14 @@ import SwiftUI
 import Photos
 
 /// The two decision lists on the home screen. Kept = swiped right, favorited,
-/// or filed to an album. To delete = the pending-trash queue.
+/// or filed to an album. To Delete = the pending-trash queue.
 enum DecidedList: Identifiable {
     case kept
     case trash
 
     var id: Self { self }
 
-    var title: String { self == .kept ? "Kept" : "To delete" }
+    var title: String { self == .kept ? "Kept" : "To Delete" }
     var icon: String { self == .kept ? "heart.fill" : "trash.fill" }
     var tint: Color { self == .kept ? Theme.keep : Theme.trash }
     var tint2: Color { self == .kept ? Theme.keep2 : Theme.trash2 }

@@ -9,7 +9,7 @@ enum PhotoSource: Hashable {
     case largest
     case year(Int)
     case duplicates
-    case decided(DecidedList)   // re-review the Kept or To delete list
+    case decided(DecidedList)   // re-review the Kept or To Delete list
 
     var title: String {
         switch self {
