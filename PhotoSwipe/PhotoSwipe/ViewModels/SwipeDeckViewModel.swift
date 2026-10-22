@@ -269,6 +269,27 @@ final class SwipeDeckViewModel: ObservableObject {
         }
     }
 
+    // MARK: Tap to browse
+
+    /// Move on without deciding. Saved nowhere, like a skip, so the photo
+    /// comes back next session. Does nothing on the last photo.
+    @discardableResult
+    func stepForward() -> Bool {
+        guard let asset = current, index + 1 < assets.count else { return false }
+        history.append(SwipeAction(asset: asset, decision: .skip, viaTap: true))
+        index += 1
+        return true
+    }
+
+    /// Back over a photo passed by a tap. A real decision is left for Undo.
+    @discardableResult
+    func stepBack() -> Bool {
+        guard let last = history.last, last.viaTap, index > 0 else { return false }
+        history.removeLast()
+        index -= 1
+        return true
+    }
+
     private func addKept(_ id: String) { keptStore.add(id); keptIDs.insert(id) }
     private func removeKept(_ id: String) { keptStore.remove(id); keptIDs.remove(id) }
 
@@ -326,13 +347,25 @@ final class SwipeDeckViewModel: ObservableObject {
             stats = statsStore.record(freed: bytes, deleted: toDelete.count)
             trashStore.clear()
             pendingTrashIDs.removeAll()
-            history.removeAll { $0.decision == .trash }
+            dropFromDeck(Set(toDelete.map(\.localIdentifier)))
             allImages = service.fetchAllPhotos()
             Haptics.success()
             if returnToPicker { backToPicker() }
         } catch {
             Haptics.warning()   // user canceled system delete sheet
         }
+    }
+
+    /// Take deleted photos out of the running deck. History holds one entry
+    /// per card before `index`, in order, so both shrink together and Undo
+    /// and tap-back still land on the right photo. (Dropping only history
+    /// entries used to leave Undo one card off after a mid-run delete.)
+    private func dropFromDeck(_ gone: Set<String>) {
+        let passed = assets.prefix(index).filter { gone.contains($0.localIdentifier) }.count
+        assets.removeAll { gone.contains($0.localIdentifier) }
+        history.removeAll { gone.contains($0.asset.localIdentifier) }
+        index = max(index - passed, 0)
+        if phase == .swiping && index >= assets.count { phase = .review }
     }
 
     /// Back-compat for the review screen.

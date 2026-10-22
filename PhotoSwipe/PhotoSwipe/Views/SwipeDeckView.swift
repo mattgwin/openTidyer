@@ -11,6 +11,7 @@ struct SwipeDeckView: View {
     @State private var showAlbumSheet = false
     @State private var original: OriginalItem?
     private var showOriginal: Bool { original != nil }
+    @State private var cardWidth: CGFloat = 0
 
     // fullScreenCover(item:) needs Identifiable; PHAsset isn't.
     private struct OriginalItem: Identifiable {
@@ -159,6 +160,11 @@ struct SwipeDeckView: View {
             }
             if let current = vm.current {
                 PhotoCardView(asset: current, translation: drag, isTop: true)
+                    .background(GeometryReader { geo in
+                        Color.clear
+                            .onAppear { cardWidth = geo.size.width }
+                            .onChange(of: geo.size.width) { _, w in cardWidth = w }
+                    })
                     .id(current.localIdentifier)
                     .offset(drag)
                     .rotationEffect(.degrees(Double(drag.width / 16)), anchor: .bottom)
@@ -168,6 +174,12 @@ struct SwipeDeckView: View {
                     .simultaneousGesture(
                         LongPressGesture(minimumDuration: 0.45)
                             .onEnded { _ in openOriginal(current) }
+                    )
+                    // A tap fails as soon as the finger moves, so it can't
+                    // fire alongside a swipe.
+                    .simultaneousGesture(
+                        SpatialTapGesture()
+                            .onEnded { value in browseTap(atX: value.location.x) }
                     )
                     .transition(.asymmetric(
                         insertion: .scale(scale: 0.92).combined(with: .opacity),
@@ -205,6 +217,23 @@ struct SwipeDeckView: View {
                     withAnimation(.cardSpring) { drag = .zero }
                 }
             }
+    }
+
+    /// Left third: back over a tapped-past photo. Right third: next photo,
+    /// undecided. The middle does nothing, so a stray tap is harmless.
+    private func browseTap(atX x: CGFloat) {
+        // Releasing a long press ends with the viewer up; a fling is mid-air
+        // while `drag` is non-zero. Neither counts as a tap.
+        guard !showOriginal, drag == .zero, cardWidth > 0 else { return }
+        let moved: Bool
+        if x < cardWidth / 3 {
+            moved = vm.stepBack()
+        } else if x > cardWidth * 2 / 3 {
+            moved = vm.stepForward()
+        } else {
+            return
+        }
+        if moved { Haptics.tap(.light) } else { Haptics.soft() }   // soft = at the end
     }
 
     private func openOriginal(_ asset: PHAsset) {

@@ -15,6 +15,9 @@ struct SwipeAction: Identifiable, Equatable {
     let id = UUID()
     let asset: PHAsset
     let decision: Decision
+    /// A `.skip` made by tapping the card's right edge, not a swipe. Tapping
+    /// the left edge only steps back over these.
+    var viaTap = false
 
     static func == (lhs: SwipeAction, rhs: SwipeAction) -> Bool {
         lhs.id == rhs.id
