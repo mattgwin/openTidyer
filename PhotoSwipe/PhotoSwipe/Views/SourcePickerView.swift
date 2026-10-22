@@ -23,10 +23,10 @@ struct SourcePickerView: View {
                 LazyVGrid(columns: cols, spacing: 14) {
                     tile(.all, subtitle: "\(vm.facets.total) photos")
                     tile(.duplicates, subtitle: "Scan & merge")
-                    tile(.screenshots, subtitle: "\(vm.facets.screenshots) shots")
-                    tile(.largest, subtitle: "Free space fast")
                     listTile(.kept, count: vm.keptAssets.count)
                     listTile(.trash, count: vm.pendingTrash.count)
+                    tile(.screenshots, subtitle: "\(vm.facets.screenshots) shots")
+                    tile(.largest, subtitle: "Free space fast")
                 }
 
                 if !vm.facets.years.isEmpty {
