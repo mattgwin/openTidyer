@@ -15,8 +15,8 @@ struct SwipeAction: Identifiable, Equatable {
     let id = UUID()
     let asset: PHAsset
     let decision: Decision
-    /// A `.skip` made by tapping the card's right edge, not a swipe. Tapping
-    /// the left edge only steps back over these.
+    /// A `.skip` made by tapping the card's left edge, not a swipe. Tapping
+    /// the right edge only steps back over these.
     var viaTap = false
     /// In a Kept / To delete deck, the list the photo was in before this
     /// decision. Undo puts it back there.

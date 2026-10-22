@@ -82,7 +82,7 @@ photos still land in **Recently Deleted (30 days)**, so mistakes are recoverable
 | Swipe **left** / trash button | Queue for deletion |
 | Swipe **up** / star button | Favorite |
 | Swipe **down** | Skip for later (reappears next session) |
-| **Tap** right / left edge of the card | Next photo without deciding / back to a photo you tapped past |
+| **Tap** left / right edge of the card | Next photo without deciding / back to a photo you tapped past |
 | **Album** button | Add to an album (create new inline) |
 | **Delete N** (header) | Delete everything swiped-to-trash so far |
 | **Undo** | Revert the last decision |

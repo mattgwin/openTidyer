@@ -239,17 +239,18 @@ struct SwipeDeckView: View {
             }
     }
 
-    /// Left third: back over a tapped-past photo. Right third: next photo,
-    /// undecided. The middle does nothing, so a stray tap is harmless.
+    /// Left third: next photo, undecided. Right third: back over a
+    /// tapped-past photo. (Matt found the Instagram-style direction
+    /// backwards.) The middle does nothing, so a stray tap is harmless.
     private func browseTap(atX x: CGFloat) {
         // Releasing a long press ends with the viewer up; a fling is mid-air
         // while `drag` is non-zero. Neither counts as a tap.
         guard !showOriginal, drag == .zero, cardWidth > 0 else { return }
         let moved: Bool
         if x < cardWidth / 3 {
-            moved = vm.stepBack()
-        } else if x > cardWidth * 2 / 3 {
             moved = vm.stepForward()
+        } else if x > cardWidth * 2 / 3 {
+            moved = vm.stepBack()
         } else {
             return
         }
