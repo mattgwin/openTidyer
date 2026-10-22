@@ -35,7 +35,7 @@ struct RootView: View {
             MessageView(
                 icon: "lock.fill",
                 title: "Photo access needed",
-                message: "PhotoSwipe needs your library to help you clean it up. Enable it in Settings › Privacy › Photos.",
+                message: "Tidyer needs your library to help you clean it up. Enable it in Settings › Privacy › Photos.",
                 button: "Open Settings",
                 tint: Theme.album
             ) {

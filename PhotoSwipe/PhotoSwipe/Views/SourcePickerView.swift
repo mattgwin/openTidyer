@@ -56,7 +56,7 @@ struct SourcePickerView: View {
 
     private var title: some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text("PHOTOSWIPE")
+            Text("TIDYER")
                 .font(.system(size: 11, weight: .semibold, design: .rounded))
                 .tracking(2.4)
                 .foregroundStyle(Theme.textDim)

@@ -1,12 +1,14 @@
 <div align="center">
 
-<img src="PhotoSwipe/docs/icon.png" width="120" alt="PhotoSwipe icon" />
+<img src="PhotoSwipe/docs/icon.png" width="120" alt="Tidyer icon" />
 
-# PhotoSwipe
+# Tidyer
 
 **Clean up your iPhone photo library by swiping — Tinder-style.**
 
 Swipe left to trash, right to keep, up to favorite, down to skip. Find duplicates, free up storage, and organize into albums — all **100% on-device**, private, and free.
+
+<sub>A fork of <a href="https://github.com/noluyorAbi/photoswipe-ios">photoswipe-ios</a> by noluyorAbi, MIT licensed.</sub>
 
 [![Platform](https://img.shields.io/badge/platform-iOS%2017%2B-black.svg)](#requirements)
 [![Swift](https://img.shields.io/badge/Swift-5.9-orange.svg)](https://swift.org)
@@ -16,7 +18,7 @@ Swipe left to trash, right to keep, up to favorite, down to skip. Find duplicate
 
 <br/>
 
-<img src="PhotoSwipe/docs/demo.gif" width="100%" alt="PhotoSwipe demo" />
+<img src="PhotoSwipe/docs/demo.gif" width="100%" alt="Tidyer demo" />
 
 <sub><a href="PhotoSwipe/docs/demo.mp4">Watch the full-quality video</a> · made with <a href="https://remotion.dev">Remotion</a></sub>
 
@@ -26,7 +28,7 @@ Swipe left to trash, right to keep, up to favorite, down to skip. Find duplicate
 
 ## Overview
 
-Got thousands of photos you'll never sort through? PhotoSwipe turns the dreadful
+Got thousands of photos you'll never sort through? Tidyer turns the dreadful
 chore of cleaning your camera roll into a fast, satisfying swipe game.
 
 Pick what to review (everything, screenshots, biggest files, a year, or
@@ -86,7 +88,7 @@ photos still land in **Recently Deleted (30 days)**, so mistakes are recoverable
 
 ## Privacy
 
-PhotoSwipe is fully **offline**. It requests photo-library access only to show,
+Tidyer is fully **offline**. It requests photo-library access only to show,
 favorite, organize, and (on your confirmation) delete your photos. There is no
 networking code, no analytics SDK, no account, and no data collection. Lifetime
 stats and review progress are stored locally in `UserDefaults` on your device.
@@ -107,8 +109,8 @@ There is no App Store build yet — you install it from source with Xcode. A
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/noluyorAbi/photoswipe-ios.git
-cd photoswipe-ios
+git clone https://github.com/mattgwin/openTidyer.git
+cd openTidyer
 ```
 
 ### 2. Open the project
@@ -117,7 +119,9 @@ cd photoswipe-ios
 open PhotoSwipe/PhotoSwipe.xcodeproj
 ```
 
-(or open `PhotoSwipe/PhotoSwipe.xcodeproj` from Xcode → File → Open.)
+(or open `PhotoSwipe/PhotoSwipe.xcodeproj` from Xcode → File → Open. The
+project and target keep the upstream name **PhotoSwipe** so upstream changes
+merge cleanly; the app installs as **Tidyer**.)
 
 ### 3. Set up signing (free Apple ID)
 
@@ -128,7 +132,7 @@ open PhotoSwipe/PhotoSwipe.xcodeproj
 4. **Team →** *Add an Account…* → sign in with your Apple ID → pick your
    *(Personal Team)*.
 5. Change the **Bundle Identifier** to something unique to you, e.g.
-   `com.yourname.PhotoSwipe` (the default may already be taken).
+   `com.yourname.Tidyer` (the default may already be taken).
 
 ### 4. Enable Developer Mode on your iPhone
 
@@ -151,7 +155,7 @@ The first launch is blocked by iOS. On the phone:
 
 - **Settings → General → VPN & Device Management → [your Apple ID] → Trust**
 
-Reopen **PhotoSwipe** from the home screen and grant **Full Access** to your
+Reopen **Tidyer** from the home screen and grant **Full Access** to your
 photo library when prompted (limited access weakens favorite/album/delete).
 
 ### The 7-day note (free accounts)
@@ -186,13 +190,13 @@ xcrun simctl addmedia booted /path/to/photo.jpg
 | **"Untrusted Developer"** on launch | Settings → General → VPN & Device Management → trust your Apple ID. |
 | Simulator build fails: *"No simulator runtime version available"* | Your installed Simulator runtime doesn't match the SDK. Install a matching iOS runtime in Xcode → Settings → Components, or build to a real device. |
 | Library looks empty in the Simulator | Expected — add photos with `xcrun simctl addmedia booted <file>` or test on a real device. |
-| Photos won't favorite/delete | You probably granted *Limited* access. Re-grant **Full Access** in Settings → Privacy → Photos → PhotoSwipe. |
+| Photos won't favorite/delete | You probably granted *Limited* access. Re-grant **Full Access** in Settings → Privacy → Photos → Tidyer. |
 
 ---
 
 ## Architecture
 
-PhotoSwipe is a single-target SwiftUI app using **MVVM** over **PhotoKit**.
+Tidyer is a single-target SwiftUI app using **MVVM** over **PhotoKit**.
 
 ```
 PhotoSwipe/
@@ -261,7 +265,7 @@ Found a bug or have an idea? [Open an issue](../../issues).
 
 ## Disclaimer
 
-PhotoSwipe deletes photos from your library (with your confirmation, into
+Tidyer deletes photos from your library (with your confirmation, into
 Recently Deleted). Use at your own risk and keep a backup (iCloud Photos / a
 computer) before mass-cleaning. The author is not responsible for lost data.
 
@@ -275,6 +279,8 @@ computer) before mass-cleaning. The author is not responsible for lost data.
 
 ## Acknowledgements
 
+- Tidyer is a fork of [photoswipe-ios](https://github.com/noluyorAbi/photoswipe-ios)
+  by noluyorAbi, used under the MIT licence above.
 - Built with Apple's **PhotoKit** and **SwiftUI**.
 - Duplicate detection inspired by classic **perceptual hashing** (dHash).
 - Not affiliated with the unrelated [PhotoSwipe](https://photoswipe.com) JavaScript gallery.
