@@ -4,6 +4,8 @@ import SwiftUI
 struct SourcePickerView: View {
     @ObservedObject var vm: SwipeDeckViewModel
     @State private var showStats = false
+    @State private var openList: DecidedList?
+    @State private var confirmReset = false
 
     private let cols = [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)]
 
@@ -23,6 +25,8 @@ struct SourcePickerView: View {
                     tile(.duplicates, subtitle: "Scan & merge")
                     tile(.screenshots, subtitle: "\(vm.facets.screenshots) shots")
                     tile(.largest, subtitle: "Free space fast")
+                    listTile(.kept, count: vm.keptAssets.count)
+                    listTile(.trash, count: vm.pendingTrash.count)
                 }
 
                 if !vm.facets.years.isEmpty {
@@ -45,6 +49,9 @@ struct SourcePickerView: View {
             StatsView(vm: vm)
                 .presentationDetents([.medium, .large])
         }
+        .sheet(item: $openList) { list in
+            DecidedPhotosView(list: list, vm: vm)
+        }
     }
 
     private var title: some View {
@@ -65,29 +72,45 @@ struct SourcePickerView: View {
             Haptics.tap()
             vm.select(source)
         } label: {
-            VStack(alignment: .leading, spacing: 0) {
-                Image(systemName: source.icon)
-                    .font(.system(size: 24, weight: .semibold))
-                    .foregroundStyle(Theme.gradient(source.tint, source.tint.opacity(0.6)))
-                    .frame(width: 50, height: 50)
-                    .background(Circle().fill(source.tint.opacity(0.14)))
-                Spacer(minLength: 18)
-                Text(source.title)
-                    .font(.system(.headline, design: .rounded).weight(.bold))
-                    .foregroundStyle(.white)
-                Text(subtitle)
-                    .font(.system(.subheadline, design: .rounded))
-                    .foregroundStyle(Theme.textDim)
-            }
-            .frame(maxWidth: .infinity, minHeight: 150, alignment: .leading)
-            .padding(18)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: 24, style: .continuous)
-                    .strokeBorder(Theme.gradient(source.tint.opacity(0.4), .clear), lineWidth: 1)
-            )
+            tileLabel(icon: source.icon, tint: source.tint, title: source.title, subtitle: subtitle)
         }
         .buttonStyle(PressableStyle(scale: 0.96))
+    }
+
+    /// Kept / To delete: opens the photo grid instead of starting a deck.
+    private func listTile(_ list: DecidedList, count: Int) -> some View {
+        Button {
+            Haptics.tap()
+            openList = list
+        } label: {
+            tileLabel(icon: list.icon, tint: list.tint, title: list.title,
+                      subtitle: "\(count) photo\(count == 1 ? "" : "s")")
+        }
+        .buttonStyle(PressableStyle(scale: 0.96))
+    }
+
+    private func tileLabel(icon: String, tint: Color, title: String, subtitle: String) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Image(systemName: icon)
+                .font(.system(size: 24, weight: .semibold))
+                .foregroundStyle(Theme.gradient(tint, tint.opacity(0.6)))
+                .frame(width: 50, height: 50)
+                .background(Circle().fill(tint.opacity(0.14)))
+            Spacer(minLength: 18)
+            Text(title)
+                .font(.system(.headline, design: .rounded).weight(.bold))
+                .foregroundStyle(.white)
+            Text(subtitle)
+                .font(.system(.subheadline, design: .rounded))
+                .foregroundStyle(Theme.textDim)
+        }
+        .frame(maxWidth: .infinity, minHeight: 150, alignment: .leading)
+        .padding(18)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .strokeBorder(Theme.gradient(tint.opacity(0.4), .clear), lineWidth: 1)
+        )
     }
 
     private var yearChips: some View {
@@ -149,12 +172,15 @@ struct SourcePickerView: View {
     }
 
     private var resetButton: some View {
+        // Two taps: a reset now also empties the Kept list.
         Button {
-            Haptics.tap(.medium); vm.resetProgress()
+            if confirmReset { Haptics.warning(); vm.resetProgress(); confirmReset = false }
+            else { Haptics.tap(.medium); confirmReset = true }
         } label: {
-            Label("Reset review progress", systemImage: "arrow.counterclockwise")
+            Label(confirmReset ? "Tap again to reset (clears Kept)" : "Reset review progress",
+                  systemImage: "arrow.counterclockwise")
                 .font(.system(.subheadline, design: .rounded).weight(.medium))
-                .foregroundStyle(Theme.textDim)
+                .foregroundStyle(confirmReset ? Theme.trash : Theme.textDim)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
         }

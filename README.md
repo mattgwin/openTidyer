@@ -54,6 +54,7 @@ photos still land in **Recently Deleted (30 days)**, so mistakes are recoverable
 - **Pause & resume** — every decision is remembered, so you continue exactly where you stopped
 - **Delete the batch you swiped so far** without finishing the whole library — a "Delete N" button appears mid-run
 - A leftover trash queue is offered on the home screen if you quit mid-session
+- **Kept** and **To delete** tiles on the home screen show every photo you've decided on. Tap one to see it large and move it to the other list; nothing is deleted until you tap Delete
 - **Sources** to break the job into chunks: All Photos · Screenshots · Largest First · by Year
 
 ### Duplicate detection (on-device)
@@ -203,6 +204,7 @@ PhotoSwipe/
 │  ├─ DuplicateFinder.swift     # dHash + average-color + burst grouping (union-find)
 │  ├─ ReviewStore.swift         # Persisted "already decided" set (resume)
 │  ├─ PendingTrashStore.swift   # Persisted trash queue (pause / batch delete)
+│  ├─ KeptStore.swift           # Persisted kept list (right swipe, favorite, album)
 │  └─ StatsStore.swift          # Lifetime analytics
 ├─ ViewModels/
 │  └─ SwipeDeckViewModel.swift  # @MainActor state machine: loading→picker→{swiping|duplicates}→review
@@ -216,6 +218,7 @@ PhotoSwipe/
 │  ├─ ReviewView.swift          # End-of-run summary + confetti + commit
 │  ├─ StatsView.swift           # Lifetime analytics dashboard
 │  ├─ AlbumPickerView.swift     # Album chooser / creator
+│  ├─ DecidedPhotosView.swift   # Kept / To delete photo grids, change-of-mind
 │  └─ Thumbnail.swift           # Async grid thumbnail
 └─ Support/
    ├─ Theme.swift               # Colors, gradients, motion tokens, haptics, aurora

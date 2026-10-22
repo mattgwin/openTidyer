@@ -272,6 +272,24 @@ final class SwipeDeckViewModel: ObservableObject {
     private func addKept(_ id: String) { keptStore.add(id); keptIDs.insert(id) }
     private func removeKept(_ id: String) { keptStore.remove(id); keptIDs.remove(id) }
 
+    // MARK: Change of mind (Kept / To delete lists)
+
+    /// Flip a photo to the other list. Nothing is deleted until the queue is
+    /// committed, and a favorite or album added on the way in is left as is.
+    func move(_ asset: PHAsset, outOf list: DecidedList) {
+        let id = asset.localIdentifier
+        switch list {
+        case .kept:
+            removeKept(id)
+            trashStore.add(id)
+            pendingTrashIDs.insert(id)
+        case .trash:
+            trashStore.remove(id)
+            pendingTrashIDs.remove(id)
+            addKept(id)
+        }
+    }
+
     // MARK: Albums
 
     func createAlbum(named name: String) async -> (id: String, title: String)? {
