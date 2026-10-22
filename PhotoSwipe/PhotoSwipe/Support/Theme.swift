@@ -1,26 +1,48 @@
 import SwiftUI
 
 // MARK: - Palette
+// mgDesign mg-core, dark mode (theme.css 0.1.0, OKLCH converted to sRGB).
+
+extension Color {
+    init(hex: UInt32) {
+        self.init(red: Double((hex >> 16) & 0xFF) / 255,
+                  green: Double((hex >> 8) & 0xFF) / 255,
+                  blue: Double(hex & 0xFF) / 255)
+    }
+}
 
 enum Theme {
-    // Deep, slightly-blue near-black. Not flat #000 — has life.
-    static let bg0 = Color(red: 0.04, green: 0.04, blue: 0.06)
-    static let bg1 = Color(red: 0.07, green: 0.07, blue: 0.10)
+    // Surfaces: warm charcoal, not blue-black.
+    static let bg0  = Color(hex: 0x0E0D0A)
+    static let bg1  = Color(hex: 0x171613)
+    static let card = Color(hex: 0x171613)
+    static let cardPressed = Color(hex: 0x272623)
+    static let stroke = Color(hex: 0x34332F)
+    static let strokeStrong = Color(hex: 0x72726E)
 
-    static let card = Color(red: 0.10, green: 0.10, blue: 0.13)
-    static let stroke = Color.white.opacity(0.08)
+    // Text. Quieter text is a quieter colour, never an in-between weight.
+    static let textStrong = Color(hex: 0xF0EEE9)  // headings, counts
+    static let text       = Color(hex: 0xDCDBD5)  // body
+    static let textMuted  = Color(hex: 0xB9B7B2)  // secondary labels
+    static let textDim    = Color(hex: 0x93928D)  // metadata
 
-    // Sharp accents, each with a gradient pair for glows.
-    static let keep   = Color(red: 0.17, green: 0.85, blue: 0.50)
-    static let keep2  = Color(red: 0.08, green: 0.72, blue: 0.40)
-    static let trash  = Color(red: 1.00, green: 0.30, blue: 0.43)
-    static let trash2 = Color(red: 0.88, green: 0.18, blue: 0.33)
-    static let favorite  = Color(red: 1.00, green: 0.76, blue: 0.24)
-    static let favorite2 = Color(red: 1.00, green: 0.60, blue: 0.12)
-    static let album  = Color(red: 0.43, green: 0.55, blue: 1.00)
-    static let album2 = Color(red: 0.29, green: 0.42, blue: 1.00)
+    // Swipe actions: base, then one step darker for the gradient end.
+    static let keep      = Color(hex: 0x85B565)   // right, moss
+    static let keep2     = Color(hex: 0x638F45)
+    static let trash     = Color(hex: 0xF0555B)   // left
+    static let trash2    = Color(hex: 0xCF4047)
+    static let favorite  = Color(hex: 0xEBBC63)   // up, amber
+    static let favorite2 = Color(hex: 0xD8953D)
+    static let album     = Color(hex: 0x89A9C1)   // album button, slate
+    static let album2    = Color(hex: 0x688BA4)
+    static let later     = Color(hex: 0xB9B7B2)   // down: neutral on purpose
 
-    static let textDim = Color.white.opacity(0.5)
+    // Text and icons ON a filled action colour. White fails contrast on
+    // every one of these fills (1.8 to 3.4:1), so always use these instead.
+    static let onKeep     = Color(hex: 0x0F1909)
+    static let onTrash    = Color(hex: 0x250E0E)
+    static let onFavorite = Color(hex: 0x1F1401)
+    static let onAlbum    = Color(hex: 0x031826)
 
     static let cardCorner: CGFloat = 30
     static let swipeThreshold: CGFloat = 105
@@ -68,6 +90,7 @@ struct PressableStyle: ButtonStyle {
 
 struct AuroraBackground: View {
     @State private var drift = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         GeometryReader { geo in
@@ -89,6 +112,7 @@ struct AuroraBackground: View {
         }
         .ignoresSafeArea()
         .onAppear {
+            guard !reduceMotion else { return }
             withAnimation(.easeInOut(duration: 11).repeatForever(autoreverses: true)) {
                 drift = true
             }
@@ -97,7 +121,7 @@ struct AuroraBackground: View {
 
     private func blob(_ color: Color, size: CGFloat) -> some View {
         Circle()
-            .fill(RadialGradient(colors: [color.opacity(0.20), .clear],
+            .fill(RadialGradient(colors: [color.opacity(0.12), .clear],
                                  center: .center, startRadius: 0, endRadius: size / 2))
             .frame(width: size, height: size)
             .blur(radius: 50)
@@ -109,7 +133,7 @@ struct AuroraBackground: View {
 struct AnimatedCount: View {
     let value: Int
     var font: Font = .title3.weight(.bold)
-    var color: Color = .white
+    var color: Color = Theme.textStrong
 
     var body: some View {
         Text("\(value)")

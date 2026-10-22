@@ -91,7 +91,7 @@ private struct EmptyLibraryView: View {
                 .offset(y: float ? -8 : 8)
             Text("Nothing to sweep")
                 .font(.system(size: 26, weight: .bold, design: .rounded))
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.textStrong)
             Text("Your library looks empty. Snap or import some photos and come back to tidy up.")
                 .font(.system(.subheadline, design: .rounded))
                 .multilineTextAlignment(.center)
@@ -112,6 +112,7 @@ private struct MessageView: View {
     let message: String
     var button: String? = nil
     var tint: Color = Theme.album
+    var onTint: Color = Theme.onAlbum   // button text on the tint fill
     var action: (() -> Void)? = nil
 
     var body: some View {
@@ -121,7 +122,7 @@ private struct MessageView: View {
                 .foregroundStyle(Theme.textDim)
             Text(title)
                 .font(.system(size: 24, weight: .bold, design: .rounded))
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.textStrong)
             Text(message)
                 .font(.system(.subheadline, design: .rounded))
                 .multilineTextAlignment(.center)
@@ -130,7 +131,7 @@ private struct MessageView: View {
             if let button, let action {
                 Button(button) { Haptics.tap(); action() }
                     .font(.system(.headline, design: .rounded).weight(.semibold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(onTint)
                     .padding(.horizontal, 22).padding(.vertical, 13)
                     .background(Theme.gradient(tint, tint.opacity(0.7)), in: Capsule())
                     .buttonStyle(PressableStyle())

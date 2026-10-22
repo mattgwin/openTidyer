@@ -39,7 +39,7 @@ struct PhotoCardView: View {
                         .opacity(appeared ? 1 : 0)
                         .scaleEffect(appeared ? 1 : 1.04)
                 } else {
-                    ProgressView().tint(.white.opacity(0.55))
+                    ProgressView().tint(Theme.textDim)
                 }
 
                 if image != nil {
@@ -73,7 +73,7 @@ struct PhotoCardView: View {
                     if let date = asset.creationDate {
                         Text(date.formatted(date: .abbreviated, time: .omitted))
                             .font(.system(.subheadline, design: .rounded).weight(.semibold))
-                            .foregroundStyle(.white.opacity(0.92))
+                            .foregroundStyle(Theme.textStrong)
                             .padding(20)
                     }
                 }
@@ -100,7 +100,7 @@ struct PhotoCardView: View {
                 stamp("FAVORITE", Theme.favorite, rotation: 0, alignment: .top,
                       opacity: max(0, vShift))
             } else {
-                stamp("LATER", .white.opacity(0.9), rotation: 0, alignment: .bottom,
+                stamp("LATER", Theme.later, rotation: 0, alignment: .bottom,
                       opacity: max(0, translation.height / Theme.swipeThreshold))
             }
         }

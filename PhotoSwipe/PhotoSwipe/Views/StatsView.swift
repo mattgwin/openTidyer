@@ -102,7 +102,7 @@ struct StatsView: View {
                 .foregroundStyle(Theme.gradient(Theme.keep, Theme.album))
             Text(byteString(vm.stats.freedBytes))
                 .font(.system(size: 48, weight: .heavy, design: .rounded))
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.textStrong)
             Text("freed across \(vm.stats.sessions) cleanup\(vm.stats.sessions == 1 ? "" : "s")")
                 .font(.system(.subheadline, design: .rounded))
                 .foregroundStyle(Theme.textDim)
@@ -138,7 +138,7 @@ struct StatsView: View {
                 .background(Circle().fill(color.opacity(0.14)))
             Text(label)
                 .font(.system(.body, design: .rounded).weight(.medium))
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.text)
             Spacer()
             AnimatedCount(value: value, color: color)
         }

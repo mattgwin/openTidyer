@@ -8,7 +8,7 @@ struct ScanningView: View {
         VStack(spacing: 24) {
             ZStack {
                 Circle()
-                    .stroke(Color.white.opacity(0.08), lineWidth: 8)
+                    .stroke(Theme.stroke, lineWidth: 8)
                 Circle()
                     .trim(from: 0, to: vm.scanProgress)
                     .stroke(Theme.gradient(Theme.album, Theme.keep),
@@ -18,7 +18,7 @@ struct ScanningView: View {
                 Text("\(Int(vm.scanProgress * 100))%")
                     .font(.system(size: 26, weight: .bold, design: .rounded))
                     .monospacedDigit()
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Theme.textStrong)
                     .contentTransition(.numericText())
             }
             .frame(width: 140, height: 140)
@@ -26,7 +26,7 @@ struct ScanningView: View {
             VStack(spacing: 4) {
                 Text("Scanning for duplicates")
                     .font(.system(.title3, design: .rounded).weight(.bold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Theme.textStrong)
                 Text("Comparing photos on-device")
                     .font(.system(.subheadline, design: .rounded))
                     .foregroundStyle(Theme.textDim)

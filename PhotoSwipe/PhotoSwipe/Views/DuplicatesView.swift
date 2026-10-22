@@ -33,7 +33,7 @@ struct DuplicatesView: View {
                     .tracking(1.6).foregroundStyle(Theme.textDim)
                 Text("\(vm.duplicateGroups.count) group\(vm.duplicateGroups.count == 1 ? "" : "s")")
                     .font(.system(.headline, design: .rounded).weight(.bold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Theme.textStrong)
             }
             Spacer()
             Color.clear.frame(width: 44, height: 44)
@@ -46,7 +46,7 @@ struct DuplicatesView: View {
         Button { Haptics.tap(); vm.backToPicker() } label: {
             Image(systemName: "chevron.left")
                 .font(.system(size: 16, weight: .bold))
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.textStrong)
                 .frame(width: 44, height: 44)
                 .background(.ultraThinMaterial, in: Circle())
                 .overlay(Circle().strokeBorder(Theme.stroke))
@@ -74,7 +74,7 @@ struct DuplicatesView: View {
             HStack {
                 Text("\(group.assets.count) similar")
                     .font(.system(.subheadline, design: .rounded).weight(.semibold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Theme.textStrong)
                 Spacer()
                 Text("\(group.trashIDs.count) to delete")
                     .font(.system(size: 13, weight: .medium, design: .rounded))
@@ -107,14 +107,14 @@ struct DuplicatesView: View {
                 .overlay(alignment: .topTrailing) {
                     Image(systemName: trashed ? "trash.circle.fill" : "checkmark.circle.fill")
                         .font(.system(size: 20, weight: .bold))
-                        .foregroundStyle(.white, trashed ? Theme.trash : Theme.keep)
+                        .foregroundStyle(trashed ? Theme.onTrash : Theme.onKeep, trashed ? Theme.trash : Theme.keep)
                         .padding(5)
                 }
                 .overlay(alignment: .bottomLeading) {
                     if isKeeper {
                         Text("BEST")
                             .font(.system(size: 9, weight: .heavy, design: .rounded))
-                            .foregroundStyle(.black)
+                            .foregroundStyle(Theme.onFavorite)
                             .padding(.horizontal, 6).padding(.vertical, 3)
                             .background(Theme.favorite, in: Capsule())
                             .padding(5)
@@ -131,7 +131,7 @@ struct DuplicatesView: View {
     private var commitBar: some View {
         Button { Task { await vm.commitDuplicates() } } label: {
             HStack(spacing: 10) {
-                if vm.isCommitting { ProgressView().tint(.white) }
+                if vm.isCommitting { ProgressView().tint(Theme.onTrash) }
                 else { Image(systemName: "trash.fill") }
                 Text(vm.duplicateTrashCount == 0 ? "Nothing selected"
                      : "Delete \(vm.duplicateTrashCount) duplicates")
@@ -141,7 +141,7 @@ struct DuplicatesView: View {
             .padding(.vertical, 17)
             .background(Theme.gradient(Theme.trash, Theme.trash2),
                         in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-            .foregroundStyle(.white)
+            .foregroundStyle(Theme.onTrash)
             .shadow(color: Theme.trash.opacity(0.4), radius: 16, y: 8)
             .opacity(vm.duplicateTrashCount == 0 ? 0.45 : 1)
         }
@@ -161,13 +161,13 @@ struct DuplicatesView: View {
                 .foregroundStyle(Theme.gradient(Theme.keep, Theme.keep2))
             Text("No duplicates found")
                 .font(.system(size: 24, weight: .bold, design: .rounded))
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.textStrong)
             Text("Your library looks clean.")
                 .font(.system(.subheadline, design: .rounded))
                 .foregroundStyle(Theme.textDim)
             Button("Back to filters") { Haptics.tap(); vm.backToPicker() }
                 .font(.system(.headline, design: .rounded).weight(.semibold))
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.onAlbum)
                 .padding(.horizontal, 22).padding(.vertical, 13)
                 .background(Theme.gradient(Theme.album, Theme.album2), in: Capsule())
                 .buttonStyle(PressableStyle())

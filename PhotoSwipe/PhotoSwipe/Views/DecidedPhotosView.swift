@@ -12,6 +12,8 @@ enum DecidedList: Identifiable {
     var title: String { self == .kept ? "Kept" : "To delete" }
     var icon: String { self == .kept ? "heart.fill" : "trash.fill" }
     var tint: Color { self == .kept ? Theme.keep : Theme.trash }
+    var tint2: Color { self == .kept ? Theme.keep2 : Theme.trash2 }
+    var onTint: Color { self == .kept ? Theme.onKeep : Theme.onTrash }
 
     /// The change-of-mind action, which sends a photo to the other list.
     var moveLabel: String { self == .kept ? "Move to delete" : "Keep instead" }
@@ -84,7 +86,7 @@ struct DecidedPhotosView: View {
             Task { await vm.commitPendingTrash(returnToPicker: true) }
         } label: {
             HStack(spacing: 10) {
-                if vm.isCommitting { ProgressView().tint(.white) }
+                if vm.isCommitting { ProgressView().tint(Theme.onTrash) }
                 else { Image(systemName: "trash.fill") }
                 Text("Delete \(count) photos")
                     .font(.system(.headline, design: .rounded).weight(.bold))
@@ -93,7 +95,7 @@ struct DecidedPhotosView: View {
             .padding(.vertical, 17)
             .background(Theme.gradient(Theme.trash, Theme.trash2),
                         in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-            .foregroundStyle(.white)
+            .foregroundStyle(Theme.onTrash)
         }
         .buttonStyle(PressableStyle(scale: 0.97))
         .disabled(vm.isCommitting)
@@ -107,7 +109,7 @@ struct DecidedPhotosView: View {
                 .foregroundStyle(list.tint.opacity(0.6))
             Text(list == .kept ? "Nothing kept yet" : "Nothing to delete")
                 .font(.system(size: 22, weight: .bold, design: .rounded))
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.textStrong)
             Text(list == .kept
                  ? "Photos you swipe right show up here."
                  : "Photos you swipe left wait here until you delete them.")
@@ -136,7 +138,7 @@ private struct DecidedPhotoDetail: View {
                     .scaledToFit()
                     .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
             } else {
-                ProgressView().tint(.white)
+                ProgressView().tint(Theme.textStrong)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -155,7 +157,6 @@ private struct DecidedPhotoDetail: View {
 
     private var moveButton: some View {
         let target: DecidedList = list == .kept ? .trash : .kept
-        let tint2 = list == .kept ? Theme.trash2 : Theme.keep2
         return Button {
             Haptics.soft()
             vm.move(asset, outOf: list)
@@ -165,9 +166,9 @@ private struct DecidedPhotoDetail: View {
                 .font(.system(.headline, design: .rounded).weight(.bold))
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 17)
-                .background(Theme.gradient(target.tint, tint2),
+                .background(Theme.gradient(target.tint, target.tint2),
                             in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-                .foregroundStyle(.white)
+                .foregroundStyle(target.onTint)
         }
         .buttonStyle(PressableStyle(scale: 0.97))
         .padding(.horizontal, 20).padding(.top, 8).padding(.bottom, 12)

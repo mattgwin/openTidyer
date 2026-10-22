@@ -62,7 +62,7 @@ struct SourcePickerView: View {
                 .foregroundStyle(Theme.textDim)
             Text("Tidy up")
                 .font(.system(size: 34, weight: .heavy, design: .rounded))
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.textStrong)
         }
         .padding(.top, 4)
     }
@@ -99,7 +99,7 @@ struct SourcePickerView: View {
             Spacer(minLength: 18)
             Text(title)
                 .font(.system(.headline, design: .rounded).weight(.bold))
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.textStrong)
             Text(subtitle)
                 .font(.system(.subheadline, design: .rounded))
                 .foregroundStyle(Theme.textDim)
@@ -123,7 +123,7 @@ struct SourcePickerView: View {
                     VStack(spacing: 1) {
                         Text(String(y.year))
                             .font(.system(.headline, design: .rounded).weight(.bold))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(Theme.textStrong)
                         Text("\(y.count)")
                             .font(.system(size: 12, weight: .medium, design: .rounded))
                             .monospacedDigit()
@@ -147,19 +147,19 @@ struct SourcePickerView: View {
             HStack(spacing: 12) {
                 Image(systemName: "trash.fill")
                     .font(.system(size: 18, weight: .bold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Theme.onTrash)
                     .frame(width: 42, height: 42)
                     .background(Theme.gradient(Theme.trash, Theme.trash2), in: Circle())
                 VStack(alignment: .leading, spacing: 1) {
                     Text("\(vm.pendingTrashCount) photos ready to delete")
                         .font(.system(.subheadline, design: .rounded).weight(.bold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Theme.textStrong)
                     Text("From your last session — tap to delete")
                         .font(.system(size: 12, weight: .medium, design: .rounded))
                         .foregroundStyle(Theme.textDim)
                 }
                 Spacer()
-                if vm.isCommitting { ProgressView().tint(.white) }
+                if vm.isCommitting { ProgressView().tint(Theme.textStrong) }
                 else { Image(systemName: "chevron.right").font(.system(size: 13, weight: .bold)).foregroundStyle(Theme.textDim) }
             }
             .padding(14)

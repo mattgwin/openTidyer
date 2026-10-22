@@ -39,7 +39,7 @@ struct ReviewView: View {
                         .tracking(2).foregroundStyle(Theme.textDim)
                     Text("Library swept")
                         .font(.system(size: 30, weight: .heavy, design: .rounded))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Theme.textStrong)
                 }
                 .opacity(appear ? 1 : 0).offset(y: appear ? 0 : 12)
 
@@ -84,7 +84,7 @@ struct ReviewView: View {
             divider
             statRow("rectangle.stack.fill", Theme.album, "Filed to albums", vm.albumedCount)
             divider
-            statRow("clock.arrow.circlepath", .white.opacity(0.7), "Skipped for later", vm.skippedCount)
+            statRow("clock.arrow.circlepath", Theme.later, "Skipped for later", vm.skippedCount)
             divider
             statRow("trash.fill", Theme.trash, "To delete", vm.pendingTrash.count)
         }
@@ -107,7 +107,7 @@ struct ReviewView: View {
                 .background(Circle().fill(color.opacity(0.14)))
             Text(label)
                 .font(.system(.body, design: .rounded).weight(.medium))
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.text)
             Spacer()
             AnimatedCount(value: count, color: color)
         }
@@ -120,7 +120,7 @@ struct ReviewView: View {
         VStack(spacing: 12) {
             Button { Task { await vm.commitDeletions() } } label: {
                 HStack(spacing: 10) {
-                    if vm.isCommitting { ProgressView().tint(.white) }
+                    if vm.isCommitting { ProgressView().tint(vm.pendingTrash.isEmpty ? Theme.onKeep : Theme.onTrash) }
                     else if !vm.pendingTrash.isEmpty { Image(systemName: "trash.fill") }
                     Text(vm.pendingTrash.isEmpty ? "Done" : "Delete \(vm.pendingTrash.count) photos")
                         .font(.system(.headline, design: .rounded).weight(.bold))
@@ -131,7 +131,7 @@ struct ReviewView: View {
                             ? Theme.gradient(Theme.keep, Theme.keep2)
                             : Theme.gradient(Theme.trash, Theme.trash2),
                             in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-                .foregroundStyle(.white)
+                .foregroundStyle(vm.pendingTrash.isEmpty ? Theme.onKeep : Theme.onTrash)
                 .shadow(color: (vm.pendingTrash.isEmpty ? Theme.keep : Theme.trash).opacity(0.4),
                         radius: 16, y: 8)
             }
@@ -159,7 +159,7 @@ struct ReviewView: View {
                 .foregroundStyle(Theme.gradient(Theme.keep, Theme.album))
             Text("Nothing left here")
                 .font(.system(size: 24, weight: .bold, design: .rounded))
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.textStrong)
             Text("You've reviewed everything in this filter.")
                 .font(.system(.subheadline, design: .rounded))
                 .multilineTextAlignment(.center)
@@ -167,7 +167,7 @@ struct ReviewView: View {
                 .padding(.horizontal, 40)
             Button("Back to filters") { Haptics.tap(); vm.backToPicker() }
                 .font(.system(.headline, design: .rounded).weight(.semibold))
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.onAlbum)
                 .padding(.horizontal, 22).padding(.vertical, 13)
                 .background(Theme.gradient(Theme.album, Theme.album2), in: Capsule())
                 .buttonStyle(PressableStyle())

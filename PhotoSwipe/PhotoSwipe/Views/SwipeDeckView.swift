@@ -32,7 +32,7 @@ struct SwipeDeckView: View {
                 Button { Haptics.tap(); vm.backToPicker() } label: {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 16, weight: .bold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Theme.textStrong)
                         .frame(width: 44, height: 44)
                         .background(.ultraThinMaterial, in: Circle())
                         .overlay(Circle().strokeBorder(Theme.stroke))
@@ -48,7 +48,7 @@ struct SwipeDeckView: View {
                         Text("\(vm.remaining)")
                             .font(.system(size: 30, weight: .bold, design: .rounded))
                             .monospacedDigit()
-                            .foregroundStyle(.white)
+                            .foregroundStyle(Theme.textStrong)
                             .contentTransition(.numericText(value: Double(vm.remaining)))
                             .animation(.snappy(duration: 0.35), value: vm.remaining)
                         Text("/ \(vm.assets.count)")
@@ -78,7 +78,7 @@ struct SwipeDeckView: View {
         } label: {
             HStack(spacing: 5) {
                 if vm.isCommitting {
-                    ProgressView().controlSize(.small).tint(.white)
+                    ProgressView().controlSize(.small).tint(Theme.onTrash)
                 } else {
                     Image(systemName: "trash.fill").font(.system(size: 13, weight: .bold))
                 }
@@ -87,7 +87,7 @@ struct SwipeDeckView: View {
                     .monospacedDigit()
                     .contentTransition(.numericText(value: Double(vm.pendingTrashCount)))
             }
-            .foregroundStyle(.white)
+            .foregroundStyle(Theme.onTrash)
             .padding(.horizontal, 13).frame(height: 44)
             .background(Theme.gradient(Theme.trash, Theme.trash2), in: Capsule())
             .shadow(color: Theme.trash.opacity(0.35), radius: 8, y: 3)
@@ -105,7 +105,7 @@ struct SwipeDeckView: View {
         } label: {
             Image(systemName: "arrow.uturn.backward")
                 .font(.system(size: 16, weight: .bold))
-                .foregroundStyle(.white)
+                .foregroundStyle(Theme.textStrong)
                 .frame(width: 44, height: 44)
                 .background(.ultraThinMaterial, in: Circle())
                 .overlay(Circle().strokeBorder(Theme.stroke))
@@ -119,7 +119,7 @@ struct SwipeDeckView: View {
     private var progressBar: some View {
         GeometryReader { geo in
             ZStack(alignment: .leading) {
-                Capsule().fill(Color.white.opacity(0.09))
+                Capsule().fill(Theme.stroke)
                 Capsule()
                     .fill(Theme.gradient(Theme.album, Theme.keep))
                     .frame(width: max(6, geo.size.width * vm.progress))

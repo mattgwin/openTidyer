@@ -4,7 +4,7 @@ import SwiftUI
 /// Lightweight: a fixed set of pieces that fall + spin once, then fade.
 struct ConfettiBurst: View {
     var trigger: Int                 // bump to fire again
-    var colors: [Color] = [Theme.keep, Theme.favorite, Theme.album, Theme.trash, .white]
+    var colors: [Color] = [Theme.keep, Theme.favorite, Theme.album, Theme.trash, Theme.textStrong]
 
     @State private var pieces: [Piece] = []
 
