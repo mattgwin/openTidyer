@@ -9,6 +9,14 @@ struct SwipeDeckView: View {
     @ObservedObject var vm: SwipeDeckViewModel
     @State private var drag: CGSize = .zero
     @State private var showAlbumSheet = false
+    @State private var original: OriginalItem?
+    private var showOriginal: Bool { original != nil }
+
+    // fullScreenCover(item:) needs Identifiable; PHAsset isn't.
+    private struct OriginalItem: Identifiable {
+        let asset: PHAsset
+        var id: String { asset.localIdentifier }
+    }
 
     var body: some View {
         deck
@@ -21,6 +29,9 @@ struct SwipeDeckView: View {
                 }
                 .presentationDetents([.medium, .large])
                 .presentationBackground(.ultraThinMaterial)
+            }
+            .fullScreenCover(item: $original) { item in
+                OriginalPhotoView(asset: item.asset)
             }
     }
 
@@ -152,6 +163,12 @@ struct SwipeDeckView: View {
                     .offset(drag)
                     .rotationEffect(.degrees(Double(drag.width / 16)), anchor: .bottom)
                     .gesture(dragGesture)
+                    // Holding still fires this; moving 10pt first fails it,
+                    // so a swipe never opens the viewer.
+                    .simultaneousGesture(
+                        LongPressGesture(minimumDuration: 0.45)
+                            .onEnded { _ in openOriginal(current) }
+                    )
                     .transition(.asymmetric(
                         insertion: .scale(scale: 0.92).combined(with: .opacity),
                         removal: .opacity))
@@ -164,8 +181,16 @@ struct SwipeDeckView: View {
 
     private var dragGesture: some Gesture {
         DragGesture()
-            .onChanged { drag = $0.translation }
+            .onChanged { value in
+                guard !showOriginal else { return }
+                drag = value.translation
+            }
             .onEnded { value in
+                // A drag that outlives the long press must never decide.
+                guard !showOriginal else {
+                    withAnimation(.cardSpring) { drag = .zero }
+                    return
+                }
                 let t = value.translation
                 if t.width > Theme.swipeThreshold {
                     fling(.right, decision: .keep)
@@ -180,6 +205,12 @@ struct SwipeDeckView: View {
                     withAnimation(.cardSpring) { drag = .zero }
                 }
             }
+    }
+
+    private func openOriginal(_ asset: PHAsset) {
+        Haptics.tap(.medium)
+        withAnimation(.cardSpring) { drag = .zero }
+        original = OriginalItem(asset: asset)
     }
 
     // MARK: Action bar

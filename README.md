@@ -85,6 +85,7 @@ photos still land in **Recently Deleted (30 days)**, so mistakes are recoverable
 | **Album** button | Add to an album (create new inline) |
 | **Delete N** (header) | Delete everything swiped-to-trash so far |
 | **Undo** | Revert the last decision |
+| **Long-press** the card | View the photo full screen (zoom; Live Photos play) |
 
 ## Privacy
 
@@ -223,6 +224,7 @@ PhotoSwipe/
 │  ├─ StatsView.swift           # Lifetime analytics dashboard
 │  ├─ AlbumPickerView.swift     # Album chooser / creator
 │  ├─ DecidedPhotosView.swift   # Kept / To delete photo grids, change-of-mind
+│  ├─ OriginalPhotoView.swift   # Long-press full-screen viewer: zoom, Live Photos
 │  └─ Thumbnail.swift           # Async grid thumbnail
 ├─ Support/
 │  ├─ Theme.swift               # Colors, gradients, motion tokens, haptics, aurora

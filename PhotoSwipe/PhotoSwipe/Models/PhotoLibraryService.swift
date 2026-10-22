@@ -64,6 +64,28 @@ final class PhotoLibraryService {
         }
     }
 
+    func requestLivePhoto(for asset: PHAsset, targetSize: CGSize) async -> PHLivePhoto? {
+        await withCheckedContinuation { cont in
+            let options = PHLivePhotoRequestOptions()
+            options.deliveryMode = .highQualityFormat
+            options.isNetworkAccessAllowed = true
+            var resumed = false
+            imageManager.requestLivePhoto(
+                for: asset,
+                targetSize: targetSize,
+                contentMode: .aspectFit,
+                options: options
+            ) { livePhoto, info in
+                // Same single-resume guard as requestImage.
+                if resumed { return }
+                let degraded = (info?[PHImageResultIsDegradedKey] as? Bool) ?? false
+                if degraded { return }
+                resumed = true
+                cont.resume(returning: livePhoto)
+            }
+        }
+    }
+
     // MARK: File size
 
     /// Approximate on-disk bytes for an asset (sum of its resources).
