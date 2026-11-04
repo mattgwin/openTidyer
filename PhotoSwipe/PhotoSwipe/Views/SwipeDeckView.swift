@@ -167,48 +167,75 @@ struct SwipeDeckView: View {
 
     // MARK: Deck
 
+    private struct DeckCard {
+        let depth: Int
+        let asset: PHAsset
+    }
+
+    /// The top card and the two behind it, keyed by photo. A card keeps its
+    /// identity as it moves up the stack, so it scales into place instead of
+    /// cross-fading with a fresh copy (which let the back cards show through).
+    private var deckCards: [DeckCard] {
+        (0...2).compactMap { depth in
+            vm.peek(depth).map { DeckCard(depth: depth, asset: $0) }
+        }
+    }
+
     private var deck: some View {
         ZStack {
-            ForEach(Array(stride(from: 2, through: 1, by: -1)), id: \.self) { depth in
-                if let asset = vm.peek(depth) {
-                    PhotoCardView(asset: asset, isTop: false)
-                        .scaleEffect(1 - CGFloat(depth) * 0.05)
-                        .offset(y: CGFloat(depth) * 14)
-                        .opacity(depth == 2 ? 0.5 : 0.85)
-                        .id(asset.localIdentifier)
-                }
-            }
-            if let current = vm.current {
-                PhotoCardView(asset: current, translation: drag, isTop: true)
-                    .background(GeometryReader { geo in
-                        Color.clear
-                            .onAppear { cardWidth = geo.size.width }
-                            .onChange(of: geo.size.width) { _, w in cardWidth = w }
-                    })
-                    .id(current.localIdentifier)
-                    .offset(drag)
-                    .rotationEffect(.degrees(Double(drag.width / 16)), anchor: .bottom)
-                    .gesture(dragGesture)
-                    // Holding still fires this; moving 10pt first fails it,
-                    // so a swipe never opens the viewer.
-                    .simultaneousGesture(
-                        LongPressGesture(minimumDuration: 0.45)
-                            .onEnded { _ in openOriginal(current) }
-                    )
-                    // A tap fails as soon as the finger moves, so it can't
-                    // fire alongside a swipe.
-                    .simultaneousGesture(
-                        SpatialTapGesture()
-                            .onEnded { value in browseTap(atX: value.location.x) }
-                    )
-                    .transition(.asymmetric(
-                        insertion: .scale(scale: 0.92).combined(with: .opacity),
-                        removal: .opacity))
+            ForEach(deckCards, id: \.asset.localIdentifier) { card in
+                deckCard(card)
             }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
         .animation(.cardSpring, value: vm.index)
+    }
+
+    /// One view tree for every depth: an `if isTop` here would give the card a
+    /// new identity as it reached the top and bring the cross-fade back.
+    private func deckCard(_ card: DeckCard) -> some View {
+        let isTop = card.depth == 0
+        let depth = CGFloat(card.depth)
+        let shift = isTop ? drag : .zero
+        return PhotoCardView(asset: card.asset, translation: shift, isTop: isTop)
+            // Back cards stay opaque and are dimmed instead, so nothing
+            // behind them shows through while the stack moves.
+            .overlay(
+                RoundedRectangle(cornerRadius: Theme.cardCorner, style: .continuous)
+                    .fill(Color.black.opacity(Double(depth) * 0.25))
+                    .allowsHitTesting(false)
+            )
+            .background(GeometryReader { geo in
+                Color.clear
+                    .onAppear { if isTop { cardWidth = geo.size.width } }
+                    .onChange(of: geo.size.width) { _, w in if isTop { cardWidth = w } }
+            })
+            .scaleEffect(1 - depth * 0.05)
+            .offset(y: depth * 14)
+            .offset(shift)
+            .rotationEffect(.degrees(Double(shift.width / 16)), anchor: .bottom)
+            .gesture(dragGesture)
+            // Holding still fires this; moving 10pt first fails it,
+            // so a swipe never opens the viewer.
+            .simultaneousGesture(
+                LongPressGesture(minimumDuration: 0.45)
+                    .onEnded { _ in openOriginal(card.asset) }
+            )
+            // A tap fails as soon as the finger moves, so it can't
+            // fire alongside a swipe.
+            .simultaneousGesture(
+                SpatialTapGesture()
+                    .onEnded { value in browseTap(atX: value.location.x) }
+            )
+            .allowsHitTesting(isTop)
+            // Earlier photos sit above later ones, so a flung card stays on
+            // top while it leaves.
+            .zIndex(-Double(vm.index + card.depth))
+            // A removed card keeps the transition it last rendered with: a
+            // flung card (drag set) fades as it flies off, while a tapped-past
+            // or tapped-back card swaps instantly. Back cards fade at the rear.
+            .transition(isTop && drag == .zero ? AnyTransition.identity : .opacity)
     }
 
     private var dragGesture: some Gesture {
